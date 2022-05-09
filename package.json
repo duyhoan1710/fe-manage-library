@@ -30,12 +30,13 @@
     "@coreui/coreui": "^4.1.2",
     "@coreui/icons": "^2.1.0",
     "@coreui/icons-react": "^2.0.1",
-    "@coreui/react": "^4.1.2",
+    "@coreui/react": "^4.2.0",
     "@coreui/react-chartjs": "^2.0.3",
     "@coreui/utils": "^1.3.1",
     "chart.js": "^3.7.1",
     "classnames": "^2.3.1",
     "core-js": "^3.21.1",
+    "formik": "^2.2.9",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-app-polyfill": "^3.0.0",
@@ -43,7 +44,8 @@
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.2",
     "redux": "4.1.2",
-    "simplebar-react": "^2.3.6"
+    "simplebar-react": "^2.3.6",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.2",
