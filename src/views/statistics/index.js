@@ -8,7 +8,7 @@ const Statistics = () => {
     <div className="pb-5">
       <CRow>
         <CCol md={1} />
-        <CCol md={3} className="d-flex flex-column align-items-center">
+        <CCol md={3}>
           <CChart
             type="doughnut"
             data={{
@@ -22,12 +22,12 @@ const Statistics = () => {
             }}
           />
 
-          <div className="mt-3">Biểu Đồ Sử Dụng Sách</div>
+          <div className="mt-3 text-center">Biểu Đồ Sử Dụng Sách</div>
         </CCol>
 
         <CCol md={1} />
 
-        <CCol md={6} className="d-flex flex-column align-items-center">
+        <CCol md={6}>
           <CChart
             type="bar"
             data={{
@@ -42,7 +42,7 @@ const Statistics = () => {
             }}
             labels="months"
           />
-          <div className="mt-3">Biểu Đồ Loại Sách Được Mượn</div>
+          <div className="mt-3 text-center">Biểu Đồ Loại Sách Được Mượn</div>
         </CCol>
         <CCol md={1} />
       </CRow>
@@ -50,7 +50,7 @@ const Statistics = () => {
       <div className="mt-5">
         <CRow>
           <CCol md={1} />
-          <CCol md={10} className="d-flex flex-column align-items-center">
+          <CCol md={10}>
             <CChart
               type="line"
               data={{
@@ -75,7 +75,7 @@ const Statistics = () => {
                 ],
               }}
             />
-            <div className="mt-3">Biểu Đồ Mượn Sách</div>
+            <div className="mt-3 text-center">Biểu Đồ Mượn Sách</div>
           </CCol>
           <CCol md={1} />
         </CRow>
