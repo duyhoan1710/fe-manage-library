@@ -13,10 +13,14 @@ import {
   CTableHeaderCell,
   CTableRow,
 } from '@coreui/react'
-import React from 'react'
+import React, { useState } from 'react'
 import { formatDate } from 'src/helpers/dayjs'
 
+import CreateBookComponent from './createBook'
+
 const Books = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
   const books = [
     {
       id: 'b98e0228-27cb-4660-948b-bb8f8cb6eb32',
@@ -94,9 +98,11 @@ const Books = () => {
         </CRow>
 
         <div className="d-flex align-items-center">
-          <CButton color="success" className="text-white">
+          <CButton color="success" className="text-white" onClick={() => setIsOpen(true)}>
             Thêm Mới
           </CButton>
+
+          <CreateBookComponent isOpen={isOpen} onClose={() => setIsOpen(false)} />
         </div>
       </div>
 

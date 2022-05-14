@@ -1,5 +1,7 @@
 import dayjs from 'dayjs'
 
 export const formatDate = (value) => {
-  return dayjs(value).format('DD/MM/YYYY') || value
+  if (!value) return null
+
+  return dayjs(value).format('DD/MM/YYYY')
 }

@@ -1,5 +1,6 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
+import 'react-datepicker/dist/react-datepicker.css'
 import './scss/style.scss'
 
 const loading = (

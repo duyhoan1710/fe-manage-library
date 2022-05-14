@@ -32,8 +32,6 @@ const Categories = () => {
     onSubmit: () => {},
   })
 
-  console.log(formik.errors)
-
   return (
     <div>
       <div className="d-flex justify-content-end mb-3">
@@ -47,7 +45,7 @@ const Categories = () => {
           <CTableRow>
             <CTableHeaderCell>Thứ Tự</CTableHeaderCell>
             <CTableHeaderCell>Tên</CTableHeaderCell>
-            <CTableHeaderCell>Cập nhật Lần Cuối</CTableHeaderCell>
+            <CTableHeaderCell className="w-200">Cập nhật Lần Cuối</CTableHeaderCell>
             <CTableHeaderCell className="action-column" />
           </CTableRow>
         </CTableHead>
