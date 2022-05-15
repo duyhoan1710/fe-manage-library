@@ -1,7 +1,10 @@
 import { useFormik } from 'formik'
-import * as React from 'react'
+import React, { useEffect } from 'react'
 import { bookSchema } from './validate'
 import PropTypes from 'prop-types'
+import { useCategory } from 'src/hooks/useCategory'
+import { useMutation } from 'react-query'
+import { createBook, updateBook } from 'src/services/book.service'
 
 const {
   CModal,
@@ -19,22 +22,67 @@ const {
   CButton,
 } = require('@coreui/react')
 
-const CreateBookComponent = ({ isOpen, onClose }) => {
+const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
+  const { data: categories } = useCategory()
+
+  const { mutate: handleSubmit, isLoading } = useMutation(
+    async ({ title, description, quantity, categoryId, term, thumbnail, pdfFile }) => {
+      console.log({ title, description, quantity, categoryId, term, thumbnail, pdfFile })
+      const formData = new FormData()
+      formData.append('title', title)
+      formData.append('description', description)
+      formData.append('quantity', quantity)
+      formData.append('term', term)
+      formData.append('categoryId', categoryId)
+      formData.append('thumbnail', thumbnail)
+      formData.append('pdfFile', pdfFile)
+
+      const res = updateBookId
+        ? await updateBook({ bookId: updateBookId, formData })
+        : await createBook({ formData })
+
+      return res.data
+    },
+    {
+      onSuccess: () => {},
+      onError: () => {},
+    },
+  )
+
   const formik = useFormik({
     initialValues: {
       title: '',
       description: '',
       quantity: '',
       categoryId: '',
+      term: '',
       thumbnail: '',
       pdfFile: '',
     },
     validationSchema: bookSchema,
-    onSubmit: () => {},
+    onSubmit: handleSubmit,
   })
 
+  useEffect(() => {
+    if (Object.keys(book)?.length && updateBookId) {
+      formik.setValues({
+        ...book,
+        // thumbnail: '',
+        // pdfFile: '',
+      })
+    }
+  }, [book])
+
   return (
-    <CModal visible={isOpen} onClose={onClose} alignment="center" size="lg">
+    <CModal
+      visible={isOpen || !!updateBookId}
+      onClose={() => {
+        onClose()
+        formik.setValues({})
+      }}
+      alignment="center"
+      size="lg"
+    >
       <CModalHeader>
         <CModalTitle>Thêm mới sách</CModalTitle>
       </CModalHeader>
@@ -49,10 +97,11 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
               <CFormInput
                 id="name"
                 type="text"
-                name="name"
-                feedbackInvalid={formik.errors?.name}
+                name="title"
+                feedbackInvalid={formik.errors?.title}
                 onChange={formik.handleChange}
-                invalid={!!formik.errors?.name}
+                invalid={!!formik.errors?.title}
+                value={formik.values?.title}
               />
             </CCol>
           </CRow>
@@ -69,6 +118,7 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
                 feedbackInvalid={formik.errors?.quantity}
                 onChange={formik.handleChange}
                 invalid={!!formik.errors?.quantity}
+                value={formik.values?.quantity}
               />
             </CCol>
           </CRow>
@@ -86,6 +136,7 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
                 feedbackInvalid={formik.errors?.description}
                 onChange={formik.handleChange}
                 invalid={!!formik.errors?.description}
+                value={formik.values?.description}
               ></CFormTextarea>
             </CCol>
           </CRow>
@@ -97,14 +148,35 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
             <CCol sm={8}>
               <CFormSelect
                 id="categoryId"
+                name="categoryId"
                 options={[
-                  { label: 'VanHoc', value: '1' },
-                  { label: 'TrinhTham', value: '2' },
-                  { label: 'TieuThuyet', value: '3' },
+                  { label: 'Lựa Chọn', value: null },
+                  ...(categories?.data?.map((category) => ({
+                    label: category.categoryName,
+                    value: category.id,
+                  })) || []),
                 ]}
                 feedbackInvalid={formik.errors?.categoryId}
                 onChange={formik.handleChange}
                 invalid={!!formik.errors?.categoryId}
+                value={formik.values?.categoryId}
+              />
+            </CCol>
+          </CRow>
+
+          <CRow className="mb-3">
+            <CFormLabel className="col-sm-4 col-form-label">Kì Học</CFormLabel>
+            <CCol sm={8}>
+              <CFormSelect
+                name="term"
+                options={[
+                  { label: 'Lựa Chọn', value: null },
+                  ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
+                ]}
+                feedbackInvalid={formik.errors?.term}
+                onChange={formik.handleChange}
+                invalid={!!formik.errors?.term}
+                value={formik.values?.term}
               />
             </CCol>
           </CRow>
@@ -114,7 +186,15 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
               Ảnh Sách
             </CFormLabel>
             <CCol sm={8}>
-              <CFormInput type="file" id="thumbnail" name="thumbnail" />
+              <CFormInput
+                type="file"
+                id="thumbnail"
+                name="thumbnail"
+                feedbackInvalid={formik.errors?.thumbnail}
+                onChange={(event) => formik.setFieldValue('thumbnail', event.target.files[0])}
+                invalid={!!formik.errors?.thumbnail}
+                // value={formik.values?.thumbnail}
+              />
             </CCol>
           </CRow>
 
@@ -123,18 +203,32 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
               PDF File
             </CFormLabel>
             <CCol sm={8}>
-              <CFormInput type="file" id="formFile" name="pdfFile" />
+              <CFormInput
+                type="file"
+                id="formFile"
+                name="pdfFile"
+                feedbackInvalid={formik.errors?.pdfFile}
+                onChange={(event) => formik.setFieldValue('pdfFile', event.target.files[0])}
+                invalid={!!formik.errors?.pdfFile}
+                // value={formik.values?.pdfFile}
+              />
             </CCol>
           </CRow>
         </CForm>
       </CModalBody>
 
       <CModalFooter>
-        <CButton color="secondary" onClick={onClose}>
+        <CButton
+          color="secondary"
+          onClick={() => {
+            onClose()
+            formik.setValues({})
+          }}
+        >
           Đóng
         </CButton>
-        <CButton color="primary" onClick={formik.handleSubmit}>
-          Lưu Thay Đổi
+        <CButton color="primary" onClick={formik.handleSubmit} disabled={isLoading}>
+          {isLoading ? 'Loading...' : 'Lưu Thay Đổi'}
         </CButton>
       </CModalFooter>
     </CModal>
@@ -144,6 +238,8 @@ const CreateBookComponent = ({ isOpen, onClose }) => {
 CreateBookComponent.propTypes = {
   isOpen: PropTypes.bool,
   onClose: PropTypes.func,
+  updateBookId: PropTypes.any,
+  book: PropTypes.object,
 }
 
 export default CreateBookComponent

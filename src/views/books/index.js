@@ -6,6 +6,11 @@ import {
   CFormLabel,
   CFormSelect,
   CImage,
+  CModal,
+  CModalBody,
+  CModalFooter,
+  CModalHeader,
+  CModalTitle,
   CRow,
   CTable,
   CTableBody,
@@ -18,73 +23,42 @@ import React, { useState } from 'react'
 import { formatDate } from 'src/helpers/dayjs'
 
 import CreateBookComponent from './createBook'
+import { useBooks } from '../../hooks/useBook'
+import { useCategory } from 'src/hooks/useCategory'
+import { useMutation, useQueryClient } from 'react-query'
+import { removeBook } from 'src/services/book.service'
+import Skeleton from 'react-loading-skeleton'
+import { BOOK } from 'src/constants/queriesKey'
 
 const Books = () => {
+  const queryClient = useQueryClient()
+
   const [isOpen, setIsOpen] = useState(false)
+  const [updateBookId, setUpdateBookId] = useState()
+  const [removeBookId, setRemoveBookId] = useState()
 
-  const books = [
-    {
-      id: 'b98e0228-27cb-4660-948b-bb8f8cb6eb32',
-      quantity: 10,
-      description: 'Chị Dậu',
-      categoryCode: 'Tài Liệu Học Tập',
-      categoryId: '2d09f8db-4fc4-4385-9090-fa188946ca7c',
-      thumbnail: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      pdfFile: 'pdf/vanhoc/vochongaphu',
-      term: 2,
-      createdAt: '2022-05-09T09:31:08.334396+00:00',
-      updatedAt: '2022-05-09T09:31:08.3343975+00:00',
-      deletedAt: null,
-      status: 0,
-    },
-    {
-      id: '3d2f52c3-817b-451e-9ad4-a894417e981c',
-      quantity: 10,
-      description: 'Chung một dòng sông',
-      categoryCode: 'Tài Liệu Học Tập',
-      categoryId: '42296bb8-c8a1-43a9-92f2-e8a5fa9e7b5a',
-      thumbnail:
-        'https://vcdn1-giaitri.vnecdn.net/2015/10/09/nhungnudienvienvietnamdinhdamt-3800-2234-1444375437.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=L4GXfRlPP3dPrdMbW79PHw',
-      pdfFile: 'pdf/vanhoc/vochongaphu',
-      term: 3,
-      createdAt: '2022-05-09T09:31:08.3343982+00:00',
-      updatedAt: '2022-05-09T09:31:08.3343983+00:00',
-      deletedAt: null,
-      status: 0,
-    },
-    {
-      id: 'b98e0228-27cb-4660-948b-bb8f8cb6eb32',
-      quantity: 10,
-      description: 'Chị Dậu',
-      categoryCode: 'Sách Tham Khảo',
-      categoryId: '2d09f8db-4fc4-4385-9090-fa188946ca7c',
-      thumbnail: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      pdfFile: 'pdf/vanhoc/vochongaphu',
-      term: 4,
-      createdAt: '2022-05-09T09:31:08.334396+00:00',
-      updatedAt: '2022-05-09T09:31:08.3343975+00:00',
-      deletedAt: null,
-      status: 0,
-    },
-    {
-      id: '3d2f52c3-817b-451e-9ad4-a894417e981c',
-      quantity: 10,
-      description: 'Chung một dòng sông',
-      categoryCode: 'Sách Tham Khảo',
-      categoryId: '42296bb8-c8a1-43a9-92f2-e8a5fa9e7b5a',
-      thumbnail:
-        'https://vcdn1-giaitri.vnecdn.net/2015/10/09/nhungnudienvienvietnamdinhdamt-3800-2234-1444375437.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=L4GXfRlPP3dPrdMbW79PHw',
-      pdfFile: 'pdf/vanhoc/vochongaphu',
-      term: 5,
-      createdAt: '2022-05-09T09:31:08.3343982+00:00',
-      updatedAt: '2022-05-09T09:31:08.3343983+00:00',
-      deletedAt: null,
-      status: 0,
-    },
-  ]
+  const { data: categories } = useCategory()
+  const { data: books, isLoading } = useBooks({})
 
-  const categories = ['Sách Tham Khảo', 'Tài Liệu Học Tập']
+  const onClose = () => {
+    setIsOpen(false)
+    setUpdateBookId(null)
+  }
 
+  const { mutate: handleRemoveBook, isLoading: isLoadingRemoveBook } = useMutation(
+    async () => {
+      const res = await removeBook({ bookId: removeBookId })
+
+      return res.data
+    },
+    {
+      onSuccess: async () => {
+        setRemoveBookId(null)
+        await queryClient.invalidateQueries(BOOK)
+      },
+      onError: () => {},
+    },
+  )
   return (
     <div>
       <div className="mb-3 d-flex">
@@ -101,14 +75,13 @@ const Books = () => {
                 { label: 'Lựa Chọn', value: null },
                 ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
               ]}
-              defaultValue={null}
             />
           </CCol>
 
           <CCol md={3} xs="auto">
             <CFormLabel htmlFor="name">Loại Sách</CFormLabel>
-            {categories.map((category) => (
-              <CFormCheck key={category} label={category} />
+            {categories?.data?.map((category) => (
+              <CFormCheck key={category.id} label={category.categoryName} />
             ))}
           </CCol>
         </CRow>
@@ -117,8 +90,6 @@ const Books = () => {
           <CButton color="success" className="text-white" onClick={() => setIsOpen(true)}>
             Thêm Mới
           </CButton>
-
-          <CreateBookComponent isOpen={isOpen} onClose={() => setIsOpen(false)} />
         </div>
       </div>
 
@@ -136,20 +107,24 @@ const Books = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {books.map((book, index) => (
+          {books?.map((book, index) => (
             <CTableRow key={book.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded fluid width={70} height={70} src={book.thumbnail} />
+                <CImage rounded width={70} height={70} src={book.thumbnail} />
               </CTableDataCell>
-              <CTableDataCell>{book.description}</CTableDataCell>
+              <CTableDataCell>{book.title}</CTableDataCell>
               <CTableDataCell>{book.categoryCode}</CTableDataCell>
               <CTableDataCell>{book.quantity}</CTableDataCell>
               <CTableDataCell>Kì {book.term}</CTableDataCell>
               <CTableDataCell>{formatDate(book.updatedAt)}</CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-evenly">
-                <CButton>Cập Nhật</CButton>
-                <CButton color="danger" className="text-white">
+              <CTableDataCell className="d-flex justify-content-evenly mt-3">
+                <CButton onClick={() => setUpdateBookId(book.id)}>Cập Nhật</CButton>
+                <CButton
+                  color="danger"
+                  className="text-white"
+                  onClick={() => setRemoveBookId(book.id)}
+                >
                   Xóa
                 </CButton>
               </CTableDataCell>
@@ -157,6 +132,30 @@ const Books = () => {
           ))}
         </CTableBody>
       </CTable>
+
+      {isLoading && <Skeleton count={5} />}
+
+      <CreateBookComponent
+        isOpen={isOpen}
+        onClose={onClose}
+        updateBookId={updateBookId}
+        book={books?.find((book) => book.id === updateBookId)}
+      />
+
+      <CModal visible={removeBookId} onClose={() => setRemoveBookId(null)} alignment="center">
+        <CModalHeader>
+          <CModalTitle>Xoá sách</CModalTitle>
+        </CModalHeader>
+        <CModalBody>Bạn có chắc chắn muốn xoá ?</CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => setRemoveBookId(null)}>
+            Đóng
+          </CButton>
+          <CButton color="primary" onClick={handleRemoveBook} disabled={isLoadingRemoveBook}>
+            {isLoadingRemoveBook ? 'Loading...' : 'Lưu Thay Đổi'}
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </div>
   )
 }

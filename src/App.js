@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import 'react-datepicker/dist/react-datepicker.css'
+import 'react-loading-skeleton/dist/skeleton.css'
 import './scss/style.scss'
 
 export const history = createBrowserHistory()

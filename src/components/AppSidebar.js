@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { CSidebar, CSidebarBrand, CSidebarNav } from '@coreui/react'
@@ -17,6 +17,7 @@ const AppSidebar = () => {
   const dispatch = useDispatch()
   const unfoldable = useSelector((state) => state.sidebarUnfoldable)
   const sidebarShow = useSelector((state) => state.sidebarShow)
+  const ref = useRef(0)
 
   return (
     <CSidebar
@@ -24,8 +25,10 @@ const AppSidebar = () => {
       unfoldable={unfoldable}
       visible={sidebarShow}
       onVisibleChange={(visible) => {
-        dispatch({ type: 'set', sidebarShow: visible })
+        if (ref.current) dispatch({ type: 'set', sidebarShow: visible })
+        else ref.current += 1
       }}
+      size="lg"
     >
       <CSidebarBrand className="d-none d-md-flex p-3 position-relative" to="/">
         <div className="position-absolute">Admin Library KMA</div>

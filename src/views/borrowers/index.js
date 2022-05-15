@@ -4,6 +4,7 @@ import {
   CFormCheck,
   CFormInput,
   CFormLabel,
+  CFormSelect,
   CImage,
   CRow,
   CTable,
@@ -15,7 +16,7 @@ import {
 } from '@coreui/react'
 import React, { useState } from 'react'
 import DatePicker from 'react-datepicker'
-import { formatDate } from 'src/helpers/dayjs'
+import { diff, formatDate } from 'src/helpers/dayjs'
 
 const Borrowers = () => {
   const [startDate, setStartDate] = useState(new Date())
@@ -99,6 +100,16 @@ const Borrowers = () => {
           <CFormInput type="text" placeholder="Chí Phèo..." />
         </CCol>
 
+        <CCol md={2} xs="auto">
+          <CFormLabel htmlFor="name">Kì Học</CFormLabel>
+          <CFormSelect
+            options={[
+              { label: 'Lựa Chọn', value: null },
+              ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
+            ]}
+          />
+        </CCol>
+
         <CCol md={1.5} xs="auto">
           <CFormLabel htmlFor="name">Loại Sách</CFormLabel>
           {categories.map((category) => (
@@ -120,9 +131,8 @@ const Borrowers = () => {
             <CTableHeaderCell>Ảnh</CTableHeaderCell>
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Mượn (Dự Kiến)</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Mượn (Thực Tế)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell className="max-w-250">Ghi Chú</CTableHeaderCell>
             <CTableHeaderCell className="action-column" />
@@ -137,14 +147,22 @@ const Borrowers = () => {
               </CTableDataCell>
               <CTableDataCell>{record.book_name}</CTableDataCell>
               <CTableDataCell>{record.user_name}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.register_date)}</CTableDataCell>
               <CTableDataCell>{formatDate(record.borrower_date)}</CTableDataCell>
               <CTableDataCell>{formatDate(record.promise_return_date)}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.return_date) || '-'}</CTableDataCell>
+              <CTableDataCell>
+                <span>{formatDate(record.return_date) || 'Chưa Trả'}</span>
+
+                {(!record.return_date && diff(new Date(), record.promise_return_date) > 0) ||
+                (record.return_date && diff(record.return_date, record.promise_return_date) > 0) ? (
+                  <span className="border p-1 rounded bg-danger text-white ms-3">Quá Hạn</span>
+                ) : (
+                  <span className="border p-1 rounded bg-success text-white ms-3">Đúng Hạn</span>
+                )}
+              </CTableDataCell>
               <CTableDataCell className="max-w-250">
                 <div className="note-column">{record.note}</div>
               </CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-center">
+              <CTableDataCell>
                 <CButton>Cập Nhật</CButton>
               </CTableDataCell>
             </CTableRow>
