@@ -1,7 +1,15 @@
 import React, { Component, Suspense } from 'react'
 import { HashRouter, Route, Routes } from 'react-router-dom'
+import { createBrowserHistory } from 'history'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import 'react-datepicker/dist/react-datepicker.css'
 import './scss/style.scss'
+
+export const history = createBrowserHistory()
+
+const queryClient = new QueryClient()
 
 const loading = (
   <div className="pt-3 text-center">
@@ -20,16 +28,20 @@ const Page500 = React.lazy(() => import('./views/page500'))
 class App extends Component {
   render() {
     return (
-      <HashRouter>
-        <Suspense fallback={loading}>
-          <Routes>
-            <Route exact path="/login" name="Login Page" element={<Login />} />
-            <Route exact path="/404" name="Page 404" element={<Page404 />} />
-            <Route exact path="/500" name="Page 500" element={<Page500 />} />
-            <Route path="*" name="Home" element={<DefaultLayout />} />
-          </Routes>
-        </Suspense>
-      </HashRouter>
+      <QueryClientProvider client={queryClient}>
+        <HashRouter history={history}>
+          <Suspense fallback={loading}>
+            <Routes>
+              <Route exact path="/login" name="Login Page" element={<Login />} />
+              <Route exact path="/404" name="Page 404" element={<Page404 />} />
+              <Route exact path="/500" name="Page 500" element={<Page500 />} />
+              <Route path="*" name="Home" element={<DefaultLayout />} />
+            </Routes>
+          </Suspense>
+        </HashRouter>
+
+        <ToastContainer autoClose={2000} />
+      </QueryClientProvider>
     )
   }
 }

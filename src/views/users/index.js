@@ -63,7 +63,7 @@ const Users = () => {
 
           <CCol md={2} xs="auto">
             <CFormLabel>Mã Sinh Viên</CFormLabel>
-            <CFormInput type="text" placeholder="CT0000000..." />
+            <CFormInput type="text" placeholder="CT0000000" />
           </CCol>
 
           <CCol md={2} xs="auto">

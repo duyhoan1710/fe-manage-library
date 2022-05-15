@@ -20,8 +20,11 @@ import {
 import React, { useState } from 'react'
 import { useFormik } from 'formik'
 import { categorySchema } from './validate'
+import { useCategory } from '../../hooks/useCategory'
 
 const Categories = () => {
+  const { data, isLoading, error } = useCategory()
+
   const [openModalAdd, setOpenModalAdd] = useState(false)
 
   const formik = useFormik({
@@ -39,50 +42,29 @@ const Categories = () => {
           Thêm Mới
         </CButton>
       </div>
-
       <CTable bordered hover align="middle">
         <CTableHead>
           <CTableRow>
-            <CTableHeaderCell>Thứ Tự</CTableHeaderCell>
+            <CTableHeaderCell>Thứ tự</CTableHeaderCell>
             <CTableHeaderCell>Tên</CTableHeaderCell>
             <CTableHeaderCell className="w-200">Cập nhật Lần Cuối</CTableHeaderCell>
             <CTableHeaderCell className="action-column" />
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          <CTableRow>
-            <CTableHeaderCell>1</CTableHeaderCell>
-            <CTableDataCell>Văn học</CTableDataCell>
-            <CTableDataCell>1/1/1970</CTableDataCell>
-            <CTableDataCell className="d-flex justify-content-evenly">
-              <CButton>Cập Nhật</CButton>
-              <CButton color="danger" className="text-white">
-                Xóa
-              </CButton>
-            </CTableDataCell>
-          </CTableRow>
-          <CTableRow>
-            <CTableHeaderCell>2</CTableHeaderCell>
-            <CTableDataCell>Hài hước</CTableDataCell>
-            <CTableDataCell>1/1/1970</CTableDataCell>
-            <CTableDataCell className="d-flex justify-content-evenly">
-              <CButton>Cập Nhật</CButton>
-              <CButton color="danger" className="text-white">
-                Xóa
-              </CButton>
-            </CTableDataCell>
-          </CTableRow>
-          <CTableRow>
-            <CTableHeaderCell>3</CTableHeaderCell>
-            <CTableDataCell>Đời sống</CTableDataCell>
-            <CTableDataCell>1/1/1970</CTableDataCell>
-            <CTableDataCell className="d-flex justify-content-evenly">
-              <CButton>Cập Nhật</CButton>
-              <CButton color="danger" className="text-white">
-                Xóa
-              </CButton>
-            </CTableDataCell>
-          </CTableRow>
+          {data?.data?.map((category, index) => (
+            <CTableRow key={category.id}>
+              <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+              <CTableDataCell>{category.categoryName}</CTableDataCell>
+              <CTableDataCell>10/5/2022</CTableDataCell>
+              <CTableDataCell className="d-flex justify-content-evenly">
+                <CButton>Cập Nhật</CButton>
+                <CButton color="danger" className="text-white">
+                  Xóa
+                </CButton>
+              </CTableDataCell>
+            </CTableRow>
+          ))}
         </CTableBody>
       </CTable>
 

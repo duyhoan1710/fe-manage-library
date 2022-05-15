@@ -28,7 +28,8 @@ const Borrowers = () => {
       user_name: 'user test',
       book_name: 'Ch Dau',
       quantity: 2,
-      borrower_date: '2021/1/1',
+      register_date: '2021/1/1',
+      borrower_date: '2021/1/4',
       return_date: '2021/3/1',
       promise_return_date: '2021/4/1',
       note: 'test test',
@@ -39,7 +40,8 @@ const Borrowers = () => {
       user_name: 'user test',
       book_name: 'Ch Dau',
       quantity: 2,
-      borrower_date: '2021/1/1',
+      register_date: '2021/1/1',
+      borrower_date: '2021/1/4',
       return_date: '',
       promise_return_date: '2021/4/1',
       note: 'test test',
@@ -50,7 +52,8 @@ const Borrowers = () => {
       user_name: 'user test',
       book_name: 'Ch Dau',
       quantity: 2,
-      borrower_date: '2021/1/1',
+      register_date: '2021/1/1',
+      borrower_date: '2021/1/4',
       return_date: '2021/5/1',
       promise_return_date: '2021/4/1',
       note: 'test test',
@@ -61,7 +64,8 @@ const Borrowers = () => {
       user_name: 'user test',
       book_name: 'Ch Dau',
       quantity: 2,
-      borrower_date: '2021/1/1',
+      register_date: '2021/1/1',
+      borrower_date: '2021/1/4',
       return_date: '2021/3/1',
       promise_return_date: '2021/4/1',
       note: 'test test',
@@ -72,14 +76,15 @@ const Borrowers = () => {
       user_name: 'user test',
       book_name: 'Ch Dau',
       quantity: 2,
-      borrower_date: '2021/1/1',
+      register_date: '2021/1/1',
+      borrower_date: '2021/1/4',
       return_date: '2021/3/1',
       promise_return_date: '2021/4/1',
       note: 'Below are examples which also can be edited directly via the editor on the left side and will be rendered on the right.',
     },
   ]
 
-  const categories = ['TieuThuyet', 'VanHoc', 'TrinhTham']
+  const categories = ['Sách Tham Khảo', 'Tài Liệu Học Tập']
 
   return (
     <div>
@@ -106,24 +111,6 @@ const Borrowers = () => {
           <CFormCheck type="radio" label="Đúng Hạn" name="hiringStatus" value="1" />
           <CFormCheck type="radio" label="Quá Hạn" name="hiringStatus" value="2" />
         </CCol>
-
-        <CCol md={2} xs="auto">
-          <CFormLabel>Ngày Mượn</CFormLabel>
-          <DatePicker
-            selected={startDate}
-            onChange={(date) => setStartDate(date)}
-            className="datePicker"
-          />
-        </CCol>
-
-        <CCol md={2} xs="auto">
-          <CFormLabel>Ngày Trả</CFormLabel>
-          <DatePicker
-            selected={endDate}
-            onChange={(date) => setEndDate(date)}
-            className="datePicker"
-          />
-        </CCol>
       </CRow>
 
       <CTable bordered hover align="middle">
@@ -133,9 +120,10 @@ const Borrowers = () => {
             <CTableHeaderCell>Ảnh</CTableHeaderCell>
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Mượn</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Hẹn Trả</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Trả</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Mượn (Dự Kiến)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Mượn (Thực Tế)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell className="max-w-250">Ghi Chú</CTableHeaderCell>
             <CTableHeaderCell className="action-column" />
           </CTableRow>
@@ -149,6 +137,7 @@ const Borrowers = () => {
               </CTableDataCell>
               <CTableDataCell>{record.book_name}</CTableDataCell>
               <CTableDataCell>{record.user_name}</CTableDataCell>
+              <CTableDataCell>{formatDate(record.register_date)}</CTableDataCell>
               <CTableDataCell>{formatDate(record.borrower_date)}</CTableDataCell>
               <CTableDataCell>{formatDate(record.promise_return_date)}</CTableDataCell>
               <CTableDataCell>{formatDate(record.return_date) || '-'}</CTableDataCell>

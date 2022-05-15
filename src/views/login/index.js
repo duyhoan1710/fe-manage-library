@@ -15,9 +15,39 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 import { useNavigate } from 'react-router-dom'
+import { useFormik } from 'formik'
+import { authSchema } from './validate'
+import { useMutation } from 'react-query'
+
+import { login } from '../../services/auth.service'
+import { toast } from 'react-toastify'
 
 const Login = () => {
   const navigate = useNavigate()
+
+  const { mutate: handleLogin, isLoading } = useMutation(
+    ({ username, password }) => {
+      return login({ username, password })
+    },
+    {
+      onSuccess: (res) => {
+        localStorage.setItem('accessToken', res.accessToken)
+        navigate('/')
+      },
+      onError: (err) => {
+        toast.error('Tài khoản hoặc mật khẩu không đúng')
+      },
+    },
+  )
+
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: authSchema,
+    onSubmit: handleLogin,
+  })
 
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
@@ -36,7 +66,13 @@ const Login = () => {
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <CFormInput
+                        placeholder="Username"
+                        name="username"
+                        feedbackInvalid={formik.errors.username}
+                        invalid={formik.errors.username}
+                        onChange={formik.handleChange}
+                      />
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
@@ -45,7 +81,10 @@ const Login = () => {
                       <CFormInput
                         type="password"
                         placeholder="Password"
-                        autoComplete="current-password"
+                        name="password"
+                        feedbackInvalid={formik.errors.password}
+                        invalid={formik.errors.password}
+                        onChange={formik.handleChange}
                       />
                     </CInputGroup>
                     <CRow className="d-flex justify-content-center">
@@ -53,9 +92,10 @@ const Login = () => {
                         <CButton
                           color="primary"
                           className="px-4 w-100"
-                          onClick={() => navigate('/')}
+                          onClick={formik.handleSubmit}
+                          disabled={isLoading}
                         >
-                          Đăng Nhập
+                          {isLoading ? 'Loading...' : 'Đăng Nhập'}
                         </CButton>
                       </CCol>
 
