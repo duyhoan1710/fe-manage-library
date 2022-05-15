@@ -20,7 +20,7 @@ import {
 } from '@coreui/react'
 import React, { useState, useEffect } from 'react'
 import { useFormik } from 'formik'
-import { categorySchema } from './validate'
+import { createCategorySchema, updateCategorySchema } from './validate'
 import { useCategory } from '../../hooks/useCategory'
 import { useMutation, useQueryClient } from 'react-query'
 import { createCategory, removeCategory, updateCategory } from 'src/services/category.service'
@@ -83,14 +83,17 @@ const Categories = () => {
       subtitle: '',
       thumbnail: '',
     },
-    validationSchema: categorySchema,
+    validationSchema: updateCategoryId ? updateCategorySchema : createCategorySchema,
     onSubmit: handleChangeCategory,
   })
 
   useEffect(() => {
     if (updateCategoryId) {
       formik.setValues(
-        categories?.data?.find((category) => category.id === updateCategoryId),
+        {
+          ...categories?.data?.find((category) => category.id === updateCategoryId),
+          thumbnail: undefined,
+        },
         false,
       )
     }

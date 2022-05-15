@@ -1,6 +1,6 @@
 import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
-import { bookSchema } from './validate'
+import { bookSchema, createBookSchema, updateBookSchema } from './validate'
 import PropTypes from 'prop-types'
 import { useCategory } from 'src/hooks/useCategory'
 import { useMutation } from 'react-query'
@@ -59,7 +59,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       thumbnail: '',
       pdfFile: '',
     },
-    validationSchema: bookSchema,
+    validationSchema: updateBookId ? updateBookSchema : createBookSchema,
     onSubmit: handleSubmit,
   })
 
@@ -67,8 +67,8 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
     if (Object.keys(book)?.length && updateBookId) {
       formik.setValues({
         ...book,
-        // thumbnail: '',
-        // pdfFile: '',
+        thumbnail: undefined,
+        pdfFile: undefined,
       })
     }
   }, [book])
