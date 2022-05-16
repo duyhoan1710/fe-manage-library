@@ -26,11 +26,7 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401) {
       localStorage.removeItem('accessToken')
 
-      if (history) {
-        history.push('/login')
-      } else {
-        window.location = '/login'
-      }
+      window.location = '/#/login'
     }
 
     if (error.response.status === 403) {
