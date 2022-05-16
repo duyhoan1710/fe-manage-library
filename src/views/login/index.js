@@ -32,7 +32,8 @@ const Login = () => {
     {
       onSuccess: (res) => {
         localStorage.setItem('accessToken', res.accessToken)
-        setTimeout(() => navigate('/'), 300)
+        console.log(localStorage.accessToken)
+        setTimeout(() => navigate('/'), 1000)
       },
       onError: (err) => {
         toast.error('Tài khoản hoặc mật khẩu không đúng')

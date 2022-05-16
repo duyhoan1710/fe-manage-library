@@ -17,11 +17,11 @@ const AppContent = () => {
             exact={route.exact}
             name={route.name}
             element={
-              route.needsAuth && !isAuthenticated ? (
-                <Navigate to="login" replace />
-              ) : (
-                <route.element />
-              )
+              // route.needsAuth && !isAuthenticated ? (
+              //   <Navigate to="/login" replace />
+              // ) : (
+              <route.element />
+              // )
             }
           />
         ))}
