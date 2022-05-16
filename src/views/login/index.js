@@ -32,7 +32,6 @@ const Login = () => {
     {
       onSuccess: (res) => {
         localStorage.setItem('accessToken', res.accessToken)
-        console.log(localStorage.accessToken)
         setTimeout(() => navigate('/'), 1000)
       },
       onError: (err) => {
