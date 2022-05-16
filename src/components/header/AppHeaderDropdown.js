@@ -19,7 +19,7 @@ const AppHeaderDropdown = () => {
 
   const logout = () => {
     localStorage.removeItem('accessToken')
-    navigate('login')
+    navigate('/login')
   }
 
   return (
