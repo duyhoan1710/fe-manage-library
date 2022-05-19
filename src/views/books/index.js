@@ -36,6 +36,7 @@ const Books = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [updateBookId, setUpdateBookId] = useState()
   const [removeBookId, setRemoveBookId] = useState()
+  const [preview, setPreview] = useState(false)
 
   const { data: categories } = useCategory()
   const { data: books, isLoading } = useBooks({})
@@ -59,6 +60,8 @@ const Books = () => {
       onError: () => {},
     },
   )
+
+  console.log(preview)
   return (
     <div>
       <div className="mb-3 d-flex">
@@ -113,7 +116,12 @@ const Books = () => {
               <CTableDataCell>
                 <CImage rounded width={70} height={70} src={book.thumbnail} />
               </CTableDataCell>
-              <CTableDataCell>{book.title}</CTableDataCell>
+              <CTableDataCell
+                className="text-primary text-underline cursor-pointer"
+                onClick={() => setPreview(book.pdfFile)}
+              >
+                {book.title}
+              </CTableDataCell>
               <CTableDataCell>{book.categoryCode}</CTableDataCell>
               <CTableDataCell>{book.quantity}</CTableDataCell>
               <CTableDataCell>Kì {book.term}</CTableDataCell>
@@ -156,6 +164,27 @@ const Books = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {preview && (
+        <CModal visible={!!preview} onClose={() => setPreview(false)} alignment="center" size="xl">
+          <CModalBody>
+            <iframe
+              src={`https://drive.google.com/viewerng/viewer?url=${preview}&embedded=true`}
+              style={{ width: '100%', height: '75vh' }}
+            ></iframe>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={() => setPreview(false)}>
+              Đóng
+            </CButton>
+            <CButton color="primary" disabled={isLoadingRemoveBook}>
+              <a href={preview} target="_blank" rel="noreferrer" className="text-white">
+                {'Download'}
+              </a>
+            </CButton>
+          </CModalFooter>
+        </CModal>
+      )}
     </div>
   )
 }

@@ -198,8 +198,7 @@ const Borrowers = () => {
             <CTableHeaderCell>Ngày Mượn (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
-            <CTableHeaderCell className="max-w-250">Ghi Chú</CTableHeaderCell>
-            <CTableHeaderCell className="action-column" />
+            <CTableHeaderCell className="w-150" />
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -224,9 +223,6 @@ const Borrowers = () => {
                 >
                   {formatDate(record.return_date) || 'Chưa Trả'}
                 </span>
-              </CTableDataCell>
-              <CTableDataCell className="max-w-250">
-                <div className="note-column">{record.note}</div>
               </CTableDataCell>
               <CTableDataCell>
                 <CButton onClick={() => setUpdateBorrowerId(record.id)}>Cập Nhật</CButton>

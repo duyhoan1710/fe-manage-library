@@ -16,6 +16,6 @@ export const updateBookSchema = Yup.object({
   description: Yup.string(),
   categoryId: Yup.string().required(),
   term: Yup.number().required(),
-  thumbnail: Yup.mixed().required(),
+  thumbnail: Yup.mixed(),
   pdfFile: Yup.mixed(),
 })

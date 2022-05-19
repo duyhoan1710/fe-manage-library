@@ -1,10 +1,12 @@
 import { useFormik } from 'formik'
 import React, { useEffect } from 'react'
-import { bookSchema, createBookSchema, updateBookSchema } from './validate'
+import { createBookSchema, updateBookSchema } from './validate'
 import PropTypes from 'prop-types'
 import { useCategory } from 'src/hooks/useCategory'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import { createBook, updateBook } from 'src/services/book.service'
+import { toast } from 'react-toastify'
+import { BOOK } from 'src/constants/queriesKey'
 
 const {
   CModal,
@@ -24,10 +26,10 @@ const {
 
 const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
   const { data: categories } = useCategory()
+  const queryClient = useQueryClient()
 
   const { mutate: handleSubmit, isLoading } = useMutation(
     async ({ title, description, quantity, categoryId, term, thumbnail, pdfFile }) => {
-      console.log({ title, description, quantity, categoryId, term, thumbnail, pdfFile })
       const formData = new FormData()
       formData.append('title', title)
       formData.append('description', description)
@@ -44,8 +46,13 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       return res.data
     },
     {
-      onSuccess: () => {},
-      onError: () => {},
+      onSuccess: async () => {
+        onClose()
+        await queryClient.invalidateQueries(BOOK)
+      },
+      onError: () => {
+        toast.error('Có Lỗi Xảy ra')
+      },
     },
   )
 
@@ -67,6 +74,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
     if (Object.keys(book)?.length && updateBookId) {
       formik.setValues({
         ...book,
+        description: book.description || '',
         thumbnail: undefined,
         pdfFile: undefined,
       })
