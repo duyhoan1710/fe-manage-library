@@ -31,6 +31,7 @@ import { useUsers } from 'src/hooks/useUser'
 import { createBorrower } from 'src/services/borrower.service'
 import { createBorrowerSchema, updateBorrowerSchema } from './validate'
 import AutoCompleteComponent from 'src/components/Autocomplete'
+import Select from 'react-select'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -125,7 +126,7 @@ const Borrowers = () => {
   const formik = useFormik({
     initialValues: {
       studentIdentify: '',
-      bookId: '',
+      bookIds: [],
       expiredDate: '',
     },
     validationSchema: updateBorrowerId ? updateBorrowerSchema : createBorrowerSchema,
@@ -136,8 +137,6 @@ const Borrowers = () => {
     setIsOpenModal(false)
     setUpdateBorrowerId(null)
   }
-
-  console.log(formik.values)
 
   return (
     <div>
@@ -244,14 +243,25 @@ const Borrowers = () => {
               </CFormLabel>
               <CCol sm={8}>
                 {books && (
-                  <AutoCompleteComponent
-                    items={books}
-                    searchKey={searchBookKey}
-                    setSearchKey={setSearchBookKey}
-                    onSelect={(value) => formik.setFieldValue('bookId', value.id)}
-                    label="title"
+                  <Select
+                    options={[...books].map((book) => ({
+                      label: book.title,
+                      value: book.id,
+                    }))}
+                    selectOption={(option) => {
+                      console.log(option)
+                    }}
+                    isMulti
+                    onChange={(value) => {
+                      formik.setFieldValue(
+                        'bookIds',
+                        value.map((el) => el.id),
+                      )
+                    }}
                   />
                 )}
+
+                {formik.errors.bookIds && <div className="error">{formik.errors.bookIds}</div>}
               </CCol>
             </CRow>
 
@@ -276,7 +286,7 @@ const Borrowers = () => {
 
             <CRow className="mb-3">
               <CFormLabel htmlFor="expiredDate" className="col-sm-4 col-form-label">
-                Hạn Trả
+                Ngày Trả
               </CFormLabel>
               <CCol sm={8}>
                 <DatePicker
