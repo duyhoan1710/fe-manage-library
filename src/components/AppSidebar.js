@@ -28,7 +28,6 @@ const AppSidebar = () => {
         if (ref.current) dispatch({ type: 'set', sidebarShow: visible })
         else ref.current += 1
       }}
-      size="lg"
     >
       <CSidebarBrand className="d-none d-md-flex p-3 position-relative" to="/">
         <div className="position-absolute">Admin Library KMA</div>

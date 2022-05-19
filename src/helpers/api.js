@@ -7,9 +7,19 @@ const baseURL = process.env.REACT_APP_BACKEND_URL
 const axiosInstance = axios.create({
   baseURL: baseURL,
   headers: {
-    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+    Authorization: `Bearer ${localStorage.accessToken}`,
   },
 })
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    config.headers.Authorization = `Bearer ${localStorage.accessToken}`
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
 
 axiosInstance.interceptors.response.use(
   (response) =>
@@ -22,6 +32,8 @@ axiosInstance.interceptors.response.use(
         reject(error)
       })
     }
+
+    console.log(localStorage.accessToken)
 
     if (error.response.status === 401) {
       localStorage.removeItem('accessToken')
