@@ -2,7 +2,15 @@ import React from 'react'
 import Autocomplete from 'react-autocomplete'
 import PropTypes from 'prop-types'
 
-const AutocompleteComponent = ({ items = [], searchKey, setSearchKey, label, onSelect }) => {
+const AutocompleteComponent = ({
+  items = [],
+  searchKey,
+  setSearchKey,
+  label,
+  onSelect,
+  disable = false,
+  defaultValue,
+}) => {
   return (
     <Autocomplete
       getItemValue={(item) => item[label]}
@@ -12,6 +20,7 @@ const AutocompleteComponent = ({ items = [], searchKey, setSearchKey, label, onS
       }
       renderItem={(item, isHighlighted) => (
         <div
+          key={item.id}
           style={{
             background: isHighlighted ? 'lightgray' : 'white',
             padding: '8px 10px',
@@ -37,11 +46,14 @@ const AutocompleteComponent = ({ items = [], searchKey, setSearchKey, label, onS
         maxHeight: '50%',
         zIndex: '9999',
       }}
-      value={searchKey}
+      value={defaultValue || searchKey}
       onChange={(e) => setSearchKey(e.target.value)}
       onSelect={(val) => {
         setSearchKey(val)
         onSelect(items.find((item) => item[label] === val))
+      }}
+      inputProps={{
+        disabled: disable,
       }}
     />
   )
@@ -53,6 +65,8 @@ AutocompleteComponent.propTypes = {
   items: PropTypes.array,
   label: PropTypes.string,
   onSelect: PropTypes.func,
+  disable: PropTypes.bool,
+  defaultValue: PropTypes.string,
 }
 
 export default AutocompleteComponent

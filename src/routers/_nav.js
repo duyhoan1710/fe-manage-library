@@ -29,13 +29,19 @@ const _nav = [
   {
     component: CNavItem,
     name: 'Người Đọc',
-    to: '/users',
+    to: '/readers',
     icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
   },
   {
     component: CNavItem,
     name: 'Thống Kê',
     to: '/statistics',
+    icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
+  },
+  {
+    component: CNavItem,
+    name: 'Người Dùng Hệ Thống',
+    to: '/users',
     icon: <CIcon icon={cilChartPie} customClassName="nav-icon" />,
   },
 ]

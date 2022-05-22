@@ -4,6 +4,7 @@ const CategoriesComponent = React.lazy(() => import('../views/categories'))
 const BooksComponent = React.lazy(() => import('../views/books'))
 const BorrowersComponent = React.lazy(() => import('../views/borrowers'))
 const UsersComponent = React.lazy(() => import('../views/users'))
+const AdminComponent = React.lazy(() => import('../views/admin'))
 const StatisticsComponent = React.lazy(() => import('../views/statistics'))
 
 const routes = [
@@ -23,7 +24,20 @@ const routes = [
     element: BorrowersComponent,
     needsAuth: true,
   },
-  { path: '/users', exact: true, name: 'Người Đọc', element: UsersComponent, needsAuth: true },
+  {
+    path: '/users',
+    exact: true,
+    name: 'Người Dùng Hệ Thống',
+    element: AdminComponent,
+    needsAuth: true,
+  },
+  {
+    path: '/readers',
+    exact: true,
+    name: 'Người Đọc',
+    element: UsersComponent,
+    needsAuth: true,
+  },
   {
     path: '/statistics',
     exact: true,

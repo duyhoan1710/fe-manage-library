@@ -13,56 +13,13 @@ import {
   CTableRow,
 } from '@coreui/react'
 import React from 'react'
+import { useUsers } from 'src/hooks/useUser'
 import UserImage from '../../assets/images/hacker.png'
 
 const Users = () => {
-  const data = [
-    {
-      id: 1,
-      full_name: 'Nguyen Duy Hoan',
-      code: 'CT000000',
-      email: 'CT00000@actvn.edu.vn',
-      phone: '0123456789',
-      thumbnail:
-        'https://book-management-storage.s3.amazonaws.com/thumbnails/00000000-0000-0000-0000-000000000000/272588839_703280581054845_949684622302582365_n.jpg',
-    },
-    {
-      id: 2,
-      full_name: 'Nguyen Duy Hoan',
-      code: 'CT000000',
-      email: 'CT00000@actvn.edu.vn',
-      phone: '0123456789',
-      thumbnail:
-        'https://book-management-storage.s3.amazonaws.com/thumbnails/00000000-0000-0000-0000-000000000000/272588839_703280581054845_949684622302582365_n.jpg',
-    },
-    {
-      id: 3,
-      full_name: 'Nguyen Duy Hoan',
-      code: 'CT000000',
-      email: 'CT00000@actvn.edu.vn',
-      phone: '0123456789',
-      thumbnail:
-        'https://book-management-storage.s3.amazonaws.com/thumbnails/00000000-0000-0000-0000-000000000000/272588839_703280581054845_949684622302582365_n.jpg',
-    },
-    {
-      id: 4,
-      full_name: 'Nguyen Duy Hoan',
-      code: 'CT000000',
-      email: 'CT00000@actvn.edu.vn',
-      phone: '0123456789',
-      thumbnail:
-        'https://book-management-storage.s3.amazonaws.com/thumbnails/00000000-0000-0000-0000-000000000000/272588839_703280581054845_949684622302582365_n.jpg',
-    },
-    {
-      id: 5,
-      full_name: 'Nguyen Duy Hoan',
-      code: 'CT000000',
-      email: 'CT00000@actvn.edu.vn',
-      phone: '0123456789',
-      thumbnail:
-        'https://book-management-storage.s3.amazonaws.com/thumbnails/00000000-0000-0000-0000-000000000000/272588839_703280581054845_949684622302582365_n.jpg',
-    },
-  ]
+  const { data: users } = useUsers()
+
+  console.log(users)
 
   return (
     <div>
@@ -83,12 +40,6 @@ const Users = () => {
             <CFormInput type="text" placeholder="CT00000@actvn.edu.vn" />
           </CCol>
         </CRow>
-
-        <div className="d-flex align-items-center">
-          <CButton color="success" className="text-white">
-            Thêm Mới
-          </CButton>
-        </div>
       </div>
 
       <CTable bordered hover align="middle">
@@ -100,26 +51,25 @@ const Users = () => {
             <CTableHeaderCell>Họ và Tên</CTableHeaderCell>
             <CTableHeaderCell>Email</CTableHeaderCell>
             <CTableHeaderCell>Số Điện Thoại</CTableHeaderCell>
-            <CTableHeaderCell className="action-column" />
+            <CTableHeaderCell>Tổng Sách Đang Mượn</CTableHeaderCell>
+            <CTableHeaderCell>Tổng Sách Đã Trả</CTableHeaderCell>
+            <CTableHeaderCell>Tổng Sách Quá Hạn</CTableHeaderCell>
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {data.map((record, index) => (
+          {users?.map((record, index) => (
             <CTableRow key={record.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded fluid width={70} height={70} src={UserImage} />
+                <CImage rounded width={70} height={60} src={record.thumbnail || UserImage} />
               </CTableDataCell>
-              <CTableDataCell>{record.code}</CTableDataCell>
-              <CTableDataCell>{record.full_name}</CTableDataCell>
+              <CTableDataCell>{record.studentIdentify}</CTableDataCell>
+              <CTableDataCell>{record.name}</CTableDataCell>
               <CTableDataCell>{record.email}</CTableDataCell>
-              <CTableDataCell>{record.phone}</CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-evenly mt-3">
-                <CButton>Cập Nhật</CButton>
-                <CButton color="danger" className="text-white">
-                  Xóa
-                </CButton>
-              </CTableDataCell>
+              <CTableDataCell>{record.numberPhone}</CTableDataCell>
+              <CTableDataCell>{record.totalHiring}</CTableDataCell>
+              <CTableDataCell>{record.totalReturned}</CTableDataCell>
+              <CTableDataCell>{record.totalExpired}</CTableDataCell>
             </CTableRow>
           ))}
         </CTableBody>

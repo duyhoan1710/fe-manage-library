@@ -6,6 +6,7 @@ import {
   CFormInput,
   CFormLabel,
   CFormSelect,
+  CFormTextarea,
   CImage,
   CModal,
   CModalBody,
@@ -21,17 +22,19 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import { useMutation, useQueryClient } from 'react-query'
 import { diff, formatDate } from 'src/helpers/dayjs'
 import { useBooks } from 'src/hooks/useBook'
 import { useCategory } from 'src/hooks/useCategory'
 import { useUsers } from 'src/hooks/useUser'
-import { createBorrower } from 'src/services/borrower.service'
+import { useBorrowers } from 'src/hooks/useBorrower'
+import { createBorrower, updateBorrower } from 'src/services/borrower.service'
 import { createBorrowerSchema, updateBorrowerSchema } from './validate'
 import AutoCompleteComponent from 'src/components/Autocomplete'
 import Select from 'react-select'
+import Skeleton from 'react-loading-skeleton'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -39,78 +42,17 @@ const Borrowers = () => {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [updateBorrowerId, setUpdateBorrowerId] = useState()
   const [searchUserKey, setSearchUserKey] = useState()
-  const [searchBookKey, setSearchBookKey] = useState()
 
   const { data: categories } = useCategory()
   const { data: books } = useBooks({})
   const { data: users } = useUsers()
-
-  const data = [
-    {
-      id: 1,
-      image: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      user_name: 'user test',
-      book_name: 'Ch Dau',
-      quantity: 2,
-      register_date: '2021/1/1',
-      borrower_date: '2021/1/4',
-      return_date: '2021/3/1',
-      promise_return_date: '2021/4/1',
-      note: 'test test',
-    },
-    {
-      id: 2,
-      image: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      user_name: 'user test',
-      book_name: 'Ch Dau',
-      quantity: 2,
-      register_date: '2021/1/1',
-      borrower_date: '2021/1/4',
-      return_date: '',
-      promise_return_date: '2021/4/1',
-      note: 'test test',
-    },
-    {
-      id: 3,
-      image: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      user_name: 'user test',
-      book_name: 'Ch Dau',
-      quantity: 2,
-      register_date: '2021/1/1',
-      borrower_date: '2021/1/4',
-      return_date: '2021/5/1',
-      promise_return_date: '2021/4/1',
-      note: 'test test',
-    },
-    {
-      id: 4,
-      image: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      user_name: 'user test',
-      book_name: 'Ch Dau',
-      quantity: 2,
-      register_date: '2021/1/1',
-      borrower_date: '2021/1/4',
-      return_date: '2021/3/1',
-      promise_return_date: '2021/4/1',
-      note: 'test test',
-    },
-    {
-      id: 5,
-      image: 'https://znews-photo.zingcdn.me/w660/Uploaded/mdf_nsozxd/2020_09_22/1.jpg',
-      user_name: 'user test',
-      book_name: 'Ch Dau',
-      quantity: 2,
-      register_date: '2021/1/1',
-      borrower_date: '2021/1/4',
-      return_date: '2021/3/1',
-      promise_return_date: '2021/4/1',
-      note: 'Below are examples which also can be edited directly via the editor on the left side and will be rendered on the right.',
-    },
-  ]
+  const { data: borrower, isLoading } = useBorrowers({})
 
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
     async () => {
-      const res = await createBorrower({ ...formik.values })
+      const res = updateBorrowerId
+        ? await updateBorrower({ borrowerId: updateBorrowerId, ...formik.values })
+        : await createBorrower({ ...formik.values })
 
       return res.data
     },
@@ -128,15 +70,36 @@ const Borrowers = () => {
       studentIdentify: '',
       bookIds: [],
       expiredDate: '',
+      returnDate: '',
+      note: '',
     },
     validationSchema: updateBorrowerId ? updateBorrowerSchema : createBorrowerSchema,
     onSubmit: onSubmit,
   })
 
+  const recordUpdate = useMemo(() => {
+    if (updateBorrowerId) {
+      const data = borrower?.find((el) => el.id === updateBorrowerId)
+      return data
+    }
+    return {}
+  }, [updateBorrowerId])
+
+  useEffect(() => {
+    if (updateBorrowerId) {
+      const data = borrower?.find((el) => el.id === updateBorrowerId)
+      formik.setFieldValue('expiredDate', data.expiredDate)
+      formik.setFieldValue('returnDate', data.returnedDate)
+      formik.setFieldValue('note', data.note || '')
+    }
+  }, [updateBorrowerId])
+
   const onClose = () => {
     setIsOpenModal(false)
     setUpdateBorrowerId(null)
   }
+
+  console.log(formik.values, updateBorrowerId)
 
   return (
     <div>
@@ -193,7 +156,9 @@ const Borrowers = () => {
             <CTableHeaderCell>Thứ Tự</CTableHeaderCell>
             <CTableHeaderCell>Ảnh</CTableHeaderCell>
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
+            <CTableHeaderCell>Loại Sách</CTableHeaderCell>
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
+            <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
             <CTableHeaderCell>Ngày Mượn (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
@@ -201,26 +166,28 @@ const Borrowers = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {data.map((record, index) => (
+          {borrower?.map((record, index) => (
             <CTableRow key={record.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded fluid width={70} height={70} src={record.image} />
+                <CImage rounded width={70} height={50} src={record.thumbnail} />
               </CTableDataCell>
-              <CTableDataCell>{record.book_name}</CTableDataCell>
-              <CTableDataCell>{record.user_name}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.borrower_date)}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.promise_return_date)}</CTableDataCell>
+              <CTableDataCell>{record.title}</CTableDataCell>
+              <CTableDataCell>{record.categoryCode}</CTableDataCell>
+              <CTableDataCell>{record.studentName}</CTableDataCell>
+              <CTableDataCell>{record.studentIdentify}</CTableDataCell>
+              <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>
+              <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
               <CTableDataCell>
                 <span
                   className={`${
-                    (!record.return_date && diff(new Date(), record.promise_return_date) > 0) ||
-                    (record.return_date && diff(record.return_date, record.promise_return_date) > 0)
+                    (!record.returnedDate && diff(new Date(), record.expiredDate) > 0) ||
+                    (record.returnedDate && diff(record.returnedDate, record.expiredDate) > 0)
                       ? 'text-danger'
                       : 'text-success'
                   }`}
                 >
-                  {formatDate(record.return_date) || 'Chưa Trả'}
+                  {formatDate(record.returnedDate) || 'Chưa Trả'}
                 </span>
               </CTableDataCell>
               <CTableDataCell>
@@ -231,9 +198,11 @@ const Borrowers = () => {
         </CTableBody>
       </CTable>
 
-      <CModal visible={isOpenModal || updateBorrowerId} onClose={onClose} alignment="center">
+      {isLoading && <Skeleton count={5} />}
+
+      <CModal visible={isOpenModal} onClose={onClose} alignment="center">
         <CModalHeader>
-          <CModalTitle>{updateBorrowerId ? 'Cập nhật mượn sách' : 'Mượn sách'}</CModalTitle>
+          <CModalTitle>Mượn sách</CModalTitle>
         </CModalHeader>
         <CModalBody>
           <CForm>
@@ -248,14 +217,11 @@ const Borrowers = () => {
                       label: book.title,
                       value: book.id,
                     }))}
-                    selectOption={(option) => {
-                      console.log(option)
-                    }}
                     isMulti
                     onChange={(value) => {
                       formik.setFieldValue(
                         'bookIds',
-                        value.map((el) => el.id),
+                        value.map((el) => el.value),
                       )
                     }}
                   />
@@ -267,7 +233,7 @@ const Borrowers = () => {
 
             <CRow className="mb-3">
               <CFormLabel htmlFor="studentIdentify" className="col-sm-4 col-form-label">
-                Người Mượn
+                Người Đọc
               </CFormLabel>
               <CCol sm={8}>
                 {users && (
@@ -286,14 +252,15 @@ const Borrowers = () => {
 
             <CRow className="mb-3">
               <CFormLabel htmlFor="expiredDate" className="col-sm-4 col-form-label">
-                Ngày Trả
+                Ngày Trả (Dự Kiến)
               </CFormLabel>
               <CCol sm={8}>
                 <DatePicker
                   id="expiredDate"
                   name="expiredDate"
                   className="datePicker"
-                  selected={formik.values?.expiredDate}
+                  dateFormat="dd/MM/yyyy"
+                  selected={formik.values?.expiredDate && new Date(formik.values?.expiredDate)}
                   onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
                 />
 
@@ -302,50 +269,6 @@ const Borrowers = () => {
                 )}
               </CCol>
             </CRow>
-
-            {updateBorrowerId && (
-              <>
-                <CRow className="mb-3">
-                  <CFormLabel htmlFor="expiredDate" className="col-sm-4 col-form-label">
-                    Ngày Mượn
-                  </CFormLabel>
-                  <CCol sm={8}>
-                    <DatePicker
-                      id="expiredDate"
-                      name="expiredDate"
-                      className="datePicker"
-                      disabled
-                      selected={formik.values?.expiredDate}
-                      onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
-                    />
-
-                    {formik.errors.expiredDate && (
-                      <div className="error">{formik.errors.expiredDate}</div>
-                    )}
-                  </CCol>
-                </CRow>
-
-                <CRow className="mb-3">
-                  <CFormLabel htmlFor="expiredDate" className="col-sm-4 col-form-label">
-                    Ngày Trả
-                  </CFormLabel>
-                  <CCol sm={8}>
-                    <DatePicker
-                      id="expiredDate"
-                      name="expiredDate"
-                      className="datePicker"
-                      disabled
-                      selected={formik.values?.expiredDate}
-                      onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
-                    />
-
-                    {formik.errors.expiredDate && (
-                      <div className="error">{formik.errors.expiredDate}</div>
-                    )}
-                  </CCol>
-                </CRow>
-              </>
-            )}
           </CForm>
         </CModalBody>
         <CModalFooter>
@@ -357,6 +280,147 @@ const Borrowers = () => {
           </CButton>
         </CModalFooter>
       </CModal>
+
+      {updateBorrowerId && (
+        <CModal visible={updateBorrowerId} onClose={onClose} alignment="center">
+          <CModalHeader>
+            <CModalTitle>Cập nhật mượn sách</CModalTitle>
+          </CModalHeader>
+          <CModalBody>
+            <CForm>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                  Tên Sách
+                </CFormLabel>
+                <CCol sm={8}>
+                  {books && (
+                    <Select
+                      options={[...books].map((book) => ({
+                        label: book.title,
+                        value: book.id,
+                      }))}
+                      isDisabled={true}
+                      onChange={(value) => {
+                        formik.setFieldValue(
+                          'bookIds',
+                          value.map((el) => el.value),
+                        )
+                      }}
+                      value={{ label: recordUpdate.title, value: recordUpdate.bookId }}
+                    />
+                  )}
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="studentIdentify" className="col-sm-4 col-form-label">
+                  Người Đọc
+                </CFormLabel>
+                <CCol sm={8}>
+                  {users && (
+                    <AutoCompleteComponent
+                      items={users}
+                      searchKey={searchUserKey}
+                      setSearchKey={setSearchUserKey}
+                      onSelect={(value) =>
+                        formik.setFieldValue('studentIdentify', value.studentIdentify)
+                      }
+                      defaultValue={recordUpdate.studentIdentify}
+                      disable={true}
+                      label="studentIdentify"
+                    />
+                  )}
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="hireFrom" className="col-sm-4 col-form-label">
+                  Ngày Mượn
+                </CFormLabel>
+                <CCol sm={8}>
+                  <DatePicker
+                    id="hireFrom"
+                    name="hireFrom"
+                    className="datePicker"
+                    selected={recordUpdate.hiredFrom && new Date(recordUpdate.hiredFrom)}
+                    disabled={true}
+                    dateFormat="dd/MM/yyyy"
+                  />
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="expiredDate" className="col-sm-4 col-form-label">
+                  Ngày Trả (Dự Kiến)
+                </CFormLabel>
+                <CCol sm={8}>
+                  <DatePicker
+                    id="expiredDate"
+                    name="expiredDate"
+                    className="datePicker"
+                    dateFormat="dd/MM/yyyy"
+                    selected={
+                      (recordUpdate.expiredDate || formik.values?.expiredDate) &&
+                      new Date(recordUpdate.expiredDate || formik.values?.expiredDate)
+                    }
+                    onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
+                  />
+
+                  {formik.errors.expiredDate && (
+                    <div className="error">{formik.errors.expiredDate}</div>
+                  )}
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="returnedDate" className="col-sm-4 col-form-label">
+                  Ngày Trả (Thực Tế)
+                </CFormLabel>
+                <CCol sm={8}>
+                  <DatePicker
+                    id="returnDate"
+                    name="returnDate"
+                    className="datePicker"
+                    dateFormat="dd/MM/yyyy"
+                    selected={formik.values?.returnDate && new Date(formik.values?.returnDate)}
+                    onChange={(value) => formik.setFieldValue('returnDate', value || '')}
+                  />
+
+                  {formik.errors.returnDate && (
+                    <div className="error">{formik.errors.returnDate}</div>
+                  )}
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="note" className="col-sm-4 col-form-label">
+                  Mô tả
+                </CFormLabel>
+                <CCol sm={8}>
+                  <CFormTextarea
+                    id="note"
+                    name="note"
+                    rows="5"
+                    text="Must be 8-20 words long."
+                    feedbackInvalid={formik.errors?.note}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.note}
+                    value={formik.values?.note}
+                  ></CFormTextarea>
+                </CCol>
+              </CRow>
+            </CForm>
+          </CModalBody>
+          <CModalFooter>
+            <CButton color="secondary" onClick={onClose}>
+              Đóng
+            </CButton>
+            <CButton color="primary" onClick={formik.handleSubmit} disabled={isLoadingSubmit}>
+              {isLoadingSubmit ? 'Loading...' : 'Lưu Thay Đổi'}
+            </CButton>
+          </CModalFooter>
+        </CModal>
+      )}
     </div>
   )
 }

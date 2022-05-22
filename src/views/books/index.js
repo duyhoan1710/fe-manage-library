@@ -61,7 +61,6 @@ const Books = () => {
     },
   )
 
-  console.log(preview)
   return (
     <div>
       <div className="mb-3 d-flex">
@@ -114,7 +113,7 @@ const Books = () => {
             <CTableRow key={book.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded width={70} height={70} src={book.thumbnail} />
+                <CImage rounded width={70} height={50} src={book.thumbnail} />
               </CTableDataCell>
               <CTableDataCell
                 className="text-primary text-underline cursor-pointer"
@@ -125,7 +124,7 @@ const Books = () => {
               <CTableDataCell>{book.categoryCode}</CTableDataCell>
               <CTableDataCell>{book.quantity}</CTableDataCell>
               <CTableDataCell>Kì {book.term}</CTableDataCell>
-              <CTableDataCell>{formatDate(book.updatedAt)}</CTableDataCell>
+              <CTableDataCell>{formatDate(book.updatedAt || book.createdAt)}</CTableDataCell>
               <CTableDataCell className="d-flex justify-content-evenly mt-3">
                 <CButton onClick={() => setUpdateBookId(book.id)}>Cập Nhật</CButton>
                 <CButton

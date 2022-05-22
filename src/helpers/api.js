@@ -33,8 +33,6 @@ axiosInstance.interceptors.response.use(
       })
     }
 
-    console.log(localStorage.accessToken)
-
     if (error.response.status === 401) {
       localStorage.removeItem('accessToken')
 
