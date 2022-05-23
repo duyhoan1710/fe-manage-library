@@ -18,7 +18,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint \"src/**/*.js\"",
     "start": "react-scripts start",
-    "test": "react-scripts test",
+    "test": "PORT=3001 react-scripts test",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand"
   },
