@@ -49,6 +49,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       onSuccess: async () => {
         onClose()
         await queryClient.invalidateQueries(BOOK)
+        toast.success('Thay Đổi Thành Công')
       },
       onError: () => {
         toast.error('Có Lỗi Xảy ra')

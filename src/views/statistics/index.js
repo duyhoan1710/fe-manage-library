@@ -2,8 +2,14 @@ import React from 'react'
 
 import { CChart } from '@coreui/react-chartjs'
 import { CCol, CRow } from '@coreui/react'
+import { useExpiredBook, useHiringBook, useReturnBook } from 'src/hooks/useBook'
 
 const Statistics = () => {
+  const { data: hiringBook } = useHiringBook({})
+  const { data: returnedBook } = useReturnBook({})
+  const { data: expiredBook } = useExpiredBook({})
+
+  console.log(hiringBook, returnedBook, expiredBook)
   return (
     <div className="pb-5">
       <CRow>
@@ -16,7 +22,11 @@ const Statistics = () => {
               datasets: [
                 {
                   backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-                  data: [40, 40, 30],
+                  data: [
+                    hiringBook?.data?.length,
+                    returnedBook?.data?.length,
+                    expiredBook?.data?.length,
+                  ],
                 },
               ],
             }}
@@ -27,23 +37,6 @@ const Statistics = () => {
 
         <CCol md={1} />
 
-        <CCol md={6}>
-          <CChart
-            type="bar"
-            data={{
-              labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-              datasets: [
-                {
-                  label: 'Số lần mượn',
-                  backgroundColor: '#f87979',
-                  data: [40, 20, 12, 39, 10, 40, 39, 80, 40],
-                },
-              ],
-            }}
-            labels="months"
-          />
-          <div className="mt-3 text-center">Biểu Đồ Loại Sách Được Mượn</div>
-        </CCol>
         <CCol md={1} />
       </CRow>
 

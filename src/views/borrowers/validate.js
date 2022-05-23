@@ -8,6 +8,6 @@ export const createBorrowerSchema = Yup.object({
 
 export const updateBorrowerSchema = Yup.object({
   expiredDate: Yup.string().required(),
-  returnDate: Yup.string(),
+  returnDate: Yup.string().nullable(),
   note: Yup.string(),
 })

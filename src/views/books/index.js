@@ -34,6 +34,7 @@ import { BOOK } from 'src/constants/queriesKey'
 import debounce from 'lodash.debounce'
 import { checkAdmin } from 'src/helpers'
 import { useProfile } from 'src/hooks/useAdmin'
+import { toast } from 'react-toastify'
 
 const Books = () => {
   const queryClient = useQueryClient()
@@ -64,8 +65,11 @@ const Books = () => {
       onSuccess: async () => {
         setRemoveBookId(null)
         await queryClient.invalidateQueries(BOOK)
+        toast.success('Thay Đổi Thành Công')
       },
-      onError: () => {},
+      onError: () => {
+        toast.error('Có Lỗi Xảy ra')
+      },
     },
   )
 

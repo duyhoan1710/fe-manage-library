@@ -27,7 +27,7 @@ export const removeBook = async ({ bookId }) => {
 }
 
 export const getHiringBooks = async (params) => {
-  const res = await api.get('/books', {
+  const res = await api.get('/bookHirings/hiring-books', {
     params,
   })
 
@@ -35,7 +35,7 @@ export const getHiringBooks = async (params) => {
 }
 
 export const getReturnBooks = async (params) => {
-  const res = await api.get('/books', {
+  const res = await api.get('/bookHirings/returned-books', {
     params,
   })
 
@@ -43,7 +43,7 @@ export const getReturnBooks = async (params) => {
 }
 
 export const getExpireBooks = async (params) => {
-  const res = await api.get('/books', {
+  const res = await api.get('/bookHirings/expired-books', {
     params,
   })
 

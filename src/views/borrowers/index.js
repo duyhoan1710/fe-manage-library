@@ -38,6 +38,7 @@ import AutoCompleteComponent from 'src/components/Autocomplete'
 import Select from 'react-select'
 import Skeleton from 'react-loading-skeleton'
 import debounce from 'lodash.debounce'
+import { toast } from 'react-toastify'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -76,8 +77,11 @@ const Borrowers = () => {
       onSuccess: async () => {
         onClose()
         await queryCache.invalidateQueries()
+        toast.success('Thay Đổi Thành Công')
       },
-      onError: () => {},
+      onError: () => {
+        toast.error('Có Lỗi Xảy ra')
+      },
     },
   )
 
@@ -441,10 +445,7 @@ const Borrowers = () => {
                     name="expiredDate"
                     className="datePicker"
                     dateFormat="dd/MM/yyyy"
-                    selected={
-                      (recordUpdate.expiredDate || formik.values?.expiredDate) &&
-                      new Date(recordUpdate.expiredDate || formik.values?.expiredDate)
-                    }
+                    selected={formik.values?.expiredDate && new Date(formik.values?.expiredDate)}
                     onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
                   />
 

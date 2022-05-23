@@ -63,7 +63,9 @@ const Categories = () => {
         await queryClient.invalidateQueries(CATEGORY)
         onClose()
       },
-      onError: () => {},
+      onError: () => {
+        toast.error('Có Lỗi Xảy ra')
+      },
     },
   )
 
@@ -76,6 +78,9 @@ const Categories = () => {
         toast.success('Thay đổi thành công')
         await queryClient.invalidateQueries(CATEGORY)
         setRemoveCategoryId(null)
+      },
+      onError: () => {
+        toast.error('Có Lỗi Xảy ra')
       },
     },
   )
