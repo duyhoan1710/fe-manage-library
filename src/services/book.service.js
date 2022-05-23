@@ -25,3 +25,27 @@ export const removeBook = async ({ bookId }) => {
 
   return res.data
 }
+
+export const getHiringBooks = async (params) => {
+  const res = await api.get('/books', {
+    params,
+  })
+
+  return res.data
+}
+
+export const getReturnBooks = async (params) => {
+  const res = await api.get('/books', {
+    params,
+  })
+
+  return res.data
+}
+
+export const getExpireBooks = async (params) => {
+  const res = await api.get('/books', {
+    params,
+  })
+
+  return res.data
+}

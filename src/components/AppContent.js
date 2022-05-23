@@ -5,8 +5,11 @@ import { isAuthenticated } from '../helpers/isAuthenticated'
 
 // routes config
 import routes from '../routers/routes'
+import { useProfile } from 'src/hooks/useAdmin'
 
 const AppContent = () => {
+  const { data: user } = useProfile()
+
   return (
     <Suspense fallback={<CSpinner color="primary" />}>
       <Routes>
@@ -17,11 +20,11 @@ const AppContent = () => {
             exact={route.exact}
             name={route.name}
             element={
-              // route.needsAuth && !isAuthenticated ? (
-              //   <Navigate to="/login" replace />
-              // ) : (
-              <route.element />
-              // )
+              !route.roles.includes(user?.role) ? (
+                <Navigate to="/login" replace />
+              ) : (
+                <route.element />
+              )
             }
           />
         ))}

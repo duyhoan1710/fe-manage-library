@@ -193,8 +193,8 @@ const Borrowers = () => {
               label="Đúng Hạn"
               name="hiringStatus"
               value="1"
-              onChange={() => {
-                setStatus('1')
+              onChange={(e) => {
+                setStatus(e.target.value)
               }}
             />
             <CFormCheck
@@ -202,8 +202,8 @@ const Borrowers = () => {
               label="Quá Hạn"
               name="hiringStatus"
               value="2"
-              onChange={() => {
-                setStatus('2')
+              onChange={(e) => {
+                setStatus(e.target.value)
               }}
             />
           </CCol>
@@ -223,9 +223,10 @@ const Borrowers = () => {
             <CTableHeaderCell>Ảnh</CTableHeaderCell>
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
             <CTableHeaderCell>Loại Sách</CTableHeaderCell>
+            <CTableHeaderCell>Kì Học</CTableHeaderCell>
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
             <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Mượn (Thực Tế)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Mượn</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell className="w-150" />
@@ -240,6 +241,7 @@ const Borrowers = () => {
               </CTableDataCell>
               <CTableDataCell>{record.title}</CTableDataCell>
               <CTableDataCell>{record.categoryCode}</CTableDataCell>
+              <CTableDataCell>Kì {record.term}</CTableDataCell>
               <CTableDataCell>{record.studentName}</CTableDataCell>
               <CTableDataCell>{record.studentIdentify}</CTableDataCell>
               <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>

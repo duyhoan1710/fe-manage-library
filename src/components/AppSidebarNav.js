@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import PropTypes from 'prop-types'
 
 import { CBadge } from '@coreui/react'
+import { useProfile } from 'src/hooks/useAdmin'
 
 export const AppSidebarNav = ({ items }) => {
   const location = useLocation()
@@ -55,10 +56,18 @@ export const AppSidebarNav = ({ items }) => {
     )
   }
 
+  const { data: user } = useProfile()
+
   return (
     <React.Fragment>
       {items &&
-        items.map((item, index) => (item.items ? navGroup(item, index) : navItem(item, index)))}
+        items.map((item, index) =>
+          item.roles.includes(user?.role)
+            ? item.items
+              ? navGroup(item, index)
+              : navItem(item, index)
+            : '',
+        )}
     </React.Fragment>
   )
 }

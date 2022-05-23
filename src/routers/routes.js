@@ -8,21 +8,37 @@ const AdminComponent = React.lazy(() => import('../views/admin'))
 const StatisticsComponent = React.lazy(() => import('../views/statistics'))
 
 const routes = [
-  { path: '/', exact: true, name: 'Thống Kê', element: StatisticsComponent, needsAuth: true },
+  {
+    path: '/',
+    exact: true,
+    name: 'Loại Sách',
+    element: CategoriesComponent,
+    needsAuth: true,
+    roles: ['Admin', 'Librarier'],
+  },
   {
     path: '/categories',
     exact: true,
     name: 'Loại Sách',
     element: CategoriesComponent,
     needsAuth: true,
+    roles: ['Admin', 'Librarier'],
   },
-  { path: '/books', exact: true, name: 'Sách', element: BooksComponent, needsAuth: true },
+  {
+    path: '/books',
+    exact: true,
+    name: 'Sách',
+    element: BooksComponent,
+    needsAuth: true,
+    roles: ['Admin', 'Librarier'],
+  },
   {
     path: '/borrowers',
     exact: true,
     name: 'Mượn - Trả',
     element: BorrowersComponent,
     needsAuth: true,
+    roles: ['Admin', 'Librarier'],
   },
   {
     path: '/users',
@@ -30,6 +46,7 @@ const routes = [
     name: 'Người Dùng Hệ Thống',
     element: AdminComponent,
     needsAuth: true,
+    roles: ['Admin'],
   },
   {
     path: '/readers',
@@ -37,6 +54,7 @@ const routes = [
     name: 'Người Đọc',
     element: UsersComponent,
     needsAuth: true,
+    roles: ['Admin', 'Librarier'],
   },
   {
     path: '/statistics',
@@ -44,6 +62,7 @@ const routes = [
     name: 'Thống Kê',
     element: StatisticsComponent,
     needsAuth: true,
+    roles: ['Admin'],
   },
 ]
 

@@ -27,6 +27,8 @@ import { createCategory, removeCategory, updateCategory } from 'src/services/cat
 import { CATEGORY } from 'src/constants/queriesKey'
 import { toast } from 'react-toastify'
 import Skeleton from 'react-loading-skeleton'
+import { useProfile } from 'src/hooks/useAdmin'
+import { checkAdmin } from 'src/helpers'
 
 const Categories = () => {
   const queryClient = useQueryClient()
@@ -42,6 +44,7 @@ const Categories = () => {
   }
 
   const { data: categories, isLoading, error } = useCategory()
+  const { data: user } = useProfile()
 
   const { mutate: handleChangeCategory, isLoading: isLoadingSubmitCategory } = useMutation(
     ({ categoryName, subtitle, thumbnail }) => {
@@ -102,9 +105,11 @@ const Categories = () => {
   return (
     <div>
       <div className="d-flex justify-content-end mb-3">
-        <CButton color="success" className="text-white" onClick={() => setOpenModalAdd(true)}>
-          Thêm Mới
-        </CButton>
+        {checkAdmin(user?.role) && (
+          <CButton color="success" className="text-white" onClick={() => setOpenModalAdd(true)}>
+            Thêm Mới
+          </CButton>
+        )}
       </div>
       <CTable bordered hover align="middle">
         <CTableHead>
@@ -114,7 +119,7 @@ const Categories = () => {
             <CTableHeaderCell>Tên</CTableHeaderCell>
             <CTableHeaderCell>Phụ đề</CTableHeaderCell>
             <CTableHeaderCell className="w-200">Cập nhật Lần Cuối</CTableHeaderCell>
-            <CTableHeaderCell className="action-column" />
+            {checkAdmin(user?.role) && <CTableHeaderCell className="action-column" />}
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -127,24 +132,26 @@ const Categories = () => {
               <CTableDataCell>{category.categoryName}</CTableDataCell>
               <CTableDataCell>{category.subtitle}</CTableDataCell>
               <CTableDataCell>10/5/2022</CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-evenly mt-3">
-                <CButton
-                  onClick={() => {
-                    setUpdateCategoryId(category.id)
-                    formik.setFieldValue('categoryName', category.categoryName, false)
-                    formik.setFieldValue('subtitle', category.subtitle, false)
-                  }}
-                >
-                  Cập Nhật
-                </CButton>
-                <CButton
-                  color="danger"
-                  className="text-white"
-                  onClick={() => setRemoveCategoryId(category.id)}
-                >
-                  Xóa
-                </CButton>
-              </CTableDataCell>
+              {checkAdmin(user?.role) && (
+                <CTableDataCell className="d-flex justify-content-evenly mt-3">
+                  <CButton
+                    onClick={() => {
+                      setUpdateCategoryId(category.id)
+                      formik.setFieldValue('categoryName', category.categoryName, false)
+                      formik.setFieldValue('subtitle', category.subtitle, false)
+                    }}
+                  >
+                    Cập Nhật
+                  </CButton>
+                  <CButton
+                    color="danger"
+                    className="text-white"
+                    onClick={() => setRemoveCategoryId(category.id)}
+                  >
+                    Xóa
+                  </CButton>
+                </CTableDataCell>
+              )}
             </CTableRow>
           ))}
         </CTableBody>

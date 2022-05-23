@@ -32,6 +32,8 @@ import { removeBook } from 'src/services/book.service'
 import Skeleton from 'react-loading-skeleton'
 import { BOOK } from 'src/constants/queriesKey'
 import debounce from 'lodash.debounce'
+import { checkAdmin } from 'src/helpers'
+import { useProfile } from 'src/hooks/useAdmin'
 
 const Books = () => {
   const queryClient = useQueryClient()
@@ -45,6 +47,7 @@ const Books = () => {
 
   const { data: categories } = useCategory()
   const { data: books, isLoading } = useBooks({ searchKey, pageNumber: page })
+  const { data: user } = useProfile()
 
   const onClose = () => {
     setIsOpen(false)
@@ -97,11 +100,13 @@ const Books = () => {
           </CCol>
         </CRow>
 
-        <div className="d-flex align-items-center">
-          <CButton color="success" className="text-white" onClick={() => setIsOpen(true)}>
-            Thêm Mới
-          </CButton>
-        </div>
+        {checkAdmin(user?.role) && (
+          <div className="d-flex align-items-center">
+            <CButton color="success" className="text-white" onClick={() => setIsOpen(true)}>
+              Thêm Mới
+            </CButton>
+          </div>
+        )}
       </div>
 
       <CTable bordered hover align="middle">
@@ -114,7 +119,7 @@ const Books = () => {
             <CTableHeaderCell>Số Lượng</CTableHeaderCell>
             <CTableHeaderCell>Kì Học</CTableHeaderCell>
             <CTableHeaderCell>Cập nhật Lần Cuối</CTableHeaderCell>
-            <CTableHeaderCell className="action-column" />
+            {checkAdmin(user?.role) && <CTableHeaderCell className="action-column" />}
           </CTableRow>
         </CTableHead>
         <CTableBody>
@@ -134,16 +139,18 @@ const Books = () => {
               <CTableDataCell>{book.quantity}</CTableDataCell>
               <CTableDataCell>Kì {book.term}</CTableDataCell>
               <CTableDataCell>{formatDate(book.updatedAt || book.createdAt)}</CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-evenly mt-3">
-                <CButton onClick={() => setUpdateBookId(book.id)}>Cập Nhật</CButton>
-                <CButton
-                  color="danger"
-                  className="text-white"
-                  onClick={() => setRemoveBookId(book.id)}
-                >
-                  Xóa
-                </CButton>
-              </CTableDataCell>
+              {checkAdmin(user?.role) && (
+                <CTableDataCell className="d-flex justify-content-evenly mt-3">
+                  <CButton onClick={() => setUpdateBookId(book.id)}>Cập Nhật</CButton>
+                  <CButton
+                    color="danger"
+                    className="text-white"
+                    onClick={() => setRemoveBookId(book.id)}
+                  >
+                    Xóa
+                  </CButton>
+                </CTableDataCell>
+              )}
             </CTableRow>
           ))}
         </CTableBody>
