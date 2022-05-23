@@ -1,8 +1,8 @@
 import { api } from '../helpers/api'
 
-export const getBooks = async ({ page, perPage }) => {
+export const getBooks = async (params) => {
   const res = await api.get('/books', {
-    params: { page, perPage },
+    params,
   })
 
   return res.data

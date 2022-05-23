@@ -11,6 +11,8 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
+  CPagination,
+  CPaginationItem,
   CRow,
   CTable,
   CTableBody,
@@ -29,6 +31,7 @@ import { useMutation, useQueryClient } from 'react-query'
 import { removeBook } from 'src/services/book.service'
 import Skeleton from 'react-loading-skeleton'
 import { BOOK } from 'src/constants/queriesKey'
+import debounce from 'lodash.debounce'
 
 const Books = () => {
   const queryClient = useQueryClient()
@@ -37,9 +40,11 @@ const Books = () => {
   const [updateBookId, setUpdateBookId] = useState()
   const [removeBookId, setRemoveBookId] = useState()
   const [preview, setPreview] = useState(false)
+  const [searchKey, setSearchKey] = useState('')
+  const [page, setPage] = useState(1)
 
   const { data: categories } = useCategory()
-  const { data: books, isLoading } = useBooks({})
+  const { data: books, isLoading } = useBooks({ searchKey, pageNumber: page })
 
   const onClose = () => {
     setIsOpen(false)
@@ -61,13 +66,17 @@ const Books = () => {
     },
   )
 
+  const searchBook = debounce((e) => {
+    setSearchKey(e.target.value)
+  }, 500)
+
   return (
     <div>
       <div className="mb-3 d-flex">
         <CRow xs={{ gutterX: 5 }} className="flex-grow-1">
           <CCol md={3} xs="auto">
             <CFormLabel htmlFor="name">Tên Sách</CFormLabel>
-            <CFormInput id="name" type="text" placeholder="Chí Phèo..." />
+            <CFormInput id="name" type="text" placeholder="Chí Phèo..." onChange={searchBook} />
           </CCol>
 
           <CCol md={3} xs="auto">
@@ -109,7 +118,7 @@ const Books = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {books?.map((book, index) => (
+          {books?.data?.map((book, index) => (
             <CTableRow key={book.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
@@ -142,11 +151,28 @@ const Books = () => {
 
       {isLoading && <Skeleton count={5} />}
 
+      <CPagination align="end">
+        <CPaginationItem aria-label="Trang Trước" disabled={page === 1}>
+          <span aria-hidden="true">&laquo;</span>
+        </CPaginationItem>
+        {Array.from({ length: Math.round(books?.totalRecords / books?.pageSize) + 1 }, (_, i) => (
+          <CPaginationItem active={i + 1 === page} onClick={() => setPage(i + 1)}>
+            {i + 1}
+          </CPaginationItem>
+        ))}
+        <CPaginationItem
+          aria-label="Next"
+          disabled={page >= Math.round(books?.totalRecords / books?.pageSize) + 1}
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </CPaginationItem>
+      </CPagination>
+
       <CreateBookComponent
         isOpen={isOpen}
         onClose={onClose}
         updateBookId={updateBookId}
-        book={books?.find((book) => book.id === updateBookId)}
+        book={books?.data?.find((book) => book.id === updateBookId)}
       />
 
       <CModal visible={removeBookId} onClose={() => setRemoveBookId(null)} alignment="center">

@@ -97,8 +97,6 @@ const Admin = () => {
     }
   }, [updateAccountId])
 
-  console.log(accounts?.data?.filter((account) => account.id === updateAccountId))
-
   return (
     <div>
       <div className="d-flex justify-content-end mb-3">

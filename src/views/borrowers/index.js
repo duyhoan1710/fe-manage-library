@@ -13,6 +13,8 @@ import {
   CModalFooter,
   CModalHeader,
   CModalTitle,
+  CPagination,
+  CPaginationItem,
   CRow,
   CTable,
   CTableBody,
@@ -35,6 +37,7 @@ import { createBorrowerSchema, updateBorrowerSchema } from './validate'
 import AutoCompleteComponent from 'src/components/Autocomplete'
 import Select from 'react-select'
 import Skeleton from 'react-loading-skeleton'
+import debounce from 'lodash.debounce'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -42,11 +45,24 @@ const Borrowers = () => {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [updateBorrowerId, setUpdateBorrowerId] = useState()
   const [searchUserKey, setSearchUserKey] = useState()
+  const [searchBookKey, setSearchBookKey] = useState()
+  const [term, setTerm] = useState()
+  const [categoryId, setCategoryId] = useState()
+  const [status, setStatus] = useState()
+  const [page, setPage] = useState(1)
 
   const { data: categories } = useCategory()
   const { data: books } = useBooks({})
   const { data: users } = useUsers()
-  const { data: borrower, isLoading } = useBorrowers({})
+  const { data: borrower, isLoading } = useBorrowers({
+    readerName: searchUserKey,
+    bookName: searchBookKey,
+    term,
+    categoryId,
+    isReturned: status === '1' || '',
+    isExpired: status === '2' || '',
+    pageNumber: page,
+  })
 
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
     async () => {
@@ -88,9 +104,9 @@ const Borrowers = () => {
   useEffect(() => {
     if (updateBorrowerId) {
       const data = borrower?.find((el) => el.id === updateBorrowerId)
-      formik.setFieldValue('expiredDate', data.expiredDate)
-      formik.setFieldValue('returnDate', data.returnedDate)
-      formik.setFieldValue('note', data.note || '')
+      formik.setFieldValue('expiredDate', data.expiredDate, false)
+      formik.setFieldValue('returnDate', data.returnedDate, false)
+      formik.setFieldValue('note', data.note || '', false)
     }
   }, [updateBorrowerId])
 
@@ -99,7 +115,13 @@ const Borrowers = () => {
     setUpdateBorrowerId(null)
   }
 
-  console.log(formik.values, updateBorrowerId)
+  const searchUser = debounce((e) => {
+    setSearchUserKey(e.target.value)
+  }, 500)
+
+  const searchBook = debounce((e) => {
+    setSearchBookKey(e.target.value)
+  }, 500)
 
   return (
     <div>
@@ -107,39 +129,83 @@ const Borrowers = () => {
         <CRow xs={{ gutterX: 5 }} className="flex-grow-1 mb-3">
           <CCol md={2} xs="auto">
             <CFormLabel>Tên Người Đọc</CFormLabel>
-            <CFormInput type="text" placeholder="Nguyễn Văn A..." />
+            <CFormInput type="text" placeholder="Nguyễn Văn A..." onChange={searchUser} />
           </CCol>
 
           <CCol md={2} xs="auto">
             <CFormLabel>Tên Sách</CFormLabel>
-            <CFormInput type="text" placeholder="Chí Phèo..." />
+            <CFormInput type="text" placeholder="Chí Phèo..." onChange={searchBook} />
           </CCol>
 
           <CCol md={2} xs="auto">
             <CFormLabel htmlFor="name">Kì Học</CFormLabel>
             <CFormSelect
               options={[
-                { label: 'Lựa Chọn', value: null },
+                { label: 'Lựa Chọn', value: '' },
                 ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
               ]}
+              onChange={(e) => {
+                setTerm(e.target.value)
+              }}
             />
           </CCol>
 
           <CCol md={1.5} xs="auto">
             <CFormLabel htmlFor="name">Loại Sách</CFormLabel>
+            <CFormCheck
+              type="radio"
+              label="Tất Cả"
+              name="categoryId"
+              value=""
+              onChange={(e) => {
+                setCategoryId('')
+              }}
+              defaultChecked
+            />
             {categories?.data?.map((category) => (
               <CFormCheck
+                type="radio"
+                name="categoryId"
                 key={category.id}
                 label={category.categoryName}
-                value={category.categoryName}
+                value={category.id}
+                onChange={(e) => {
+                  setCategoryId(e.target.value)
+                }}
               />
             ))}
           </CCol>
 
           <CCol md={1.5} xs="auto">
             <CFormLabel htmlFor="name">Trạng Thái</CFormLabel>
-            <CFormCheck type="radio" label="Đúng Hạn" name="hiringStatus" value="1" />
-            <CFormCheck type="radio" label="Quá Hạn" name="hiringStatus" value="2" />
+            <CFormCheck
+              type="radio"
+              label="Tất Cả"
+              name="hiringStatus"
+              value=""
+              defaultChecked
+              onChange={() => {
+                setStatus('')
+              }}
+            />
+            <CFormCheck
+              type="radio"
+              label="Đúng Hạn"
+              name="hiringStatus"
+              value="1"
+              onChange={() => {
+                setStatus('1')
+              }}
+            />
+            <CFormCheck
+              type="radio"
+              label="Quá Hạn"
+              name="hiringStatus"
+              value="2"
+              onChange={() => {
+                setStatus('2')
+              }}
+            />
           </CCol>
         </CRow>
 
@@ -200,6 +266,20 @@ const Borrowers = () => {
 
       {isLoading && <Skeleton count={5} />}
 
+      <CPagination align="end">
+        <CPaginationItem aria-label="Trang Trước">
+          <span aria-hidden="true">&laquo;</span>
+        </CPaginationItem>
+        {Array.from({ length: 3 }, (_, i) => (
+          <CPaginationItem active={i + 1 === page} onClick={() => setPage(i + 1)}>
+            {i + 1}
+          </CPaginationItem>
+        ))}
+        <CPaginationItem aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </CPaginationItem>
+      </CPagination>
+
       <CModal visible={isOpenModal} onClose={onClose} alignment="center">
         <CModalHeader>
           <CModalTitle>Mượn sách</CModalTitle>
@@ -213,7 +293,7 @@ const Borrowers = () => {
               <CCol sm={8}>
                 {books && (
                   <Select
-                    options={[...books].map((book) => ({
+                    options={[...books.data].map((book) => ({
                       label: book.title,
                       value: book.id,
                     }))}
@@ -295,7 +375,7 @@ const Borrowers = () => {
                 <CCol sm={8}>
                   {books && (
                     <Select
-                      options={[...books].map((book) => ({
+                      options={[...books.data].map((book) => ({
                         label: book.title,
                         value: book.id,
                       }))}

@@ -19,8 +19,6 @@ import UserImage from '../../assets/images/hacker.png'
 const Users = () => {
   const { data: users } = useUsers()
 
-  console.log(users)
-
   return (
     <div>
       <div className="d-flex">

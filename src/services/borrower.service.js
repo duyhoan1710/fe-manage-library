@@ -1,7 +1,27 @@
 import { api } from '../helpers/api'
 
-export const getBorrower = async ({}) => {
-  const res = await api.get('/bookHirings/student-hiring-books')
+export const getBorrower = async ({
+  readerName,
+  bookName,
+  term,
+  categoryId,
+  isReturned,
+  isExpired,
+  pageSize,
+  pageNumber,
+}) => {
+  const res = await api.get('/bookHirings/student-hiring-books', {
+    params: {
+      readerName,
+      bookName,
+      term,
+      categoryId,
+      isReturned,
+      isExpired,
+      pageSize,
+      pageNumber,
+    },
+  })
 
   return res.data
 }
