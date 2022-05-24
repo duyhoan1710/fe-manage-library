@@ -47,7 +47,7 @@ const Borrowers = () => {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [updateBorrowerId, setUpdateBorrowerId] = useState()
   const [searchUserKey, setSearchUserKey] = useState()
-  const [searchBookKey, setSearchBookKey] = useState()
+  const [searchBookKey, setSearchBookKey] = useState(undefined)
   const [term, setTerm] = useState()
   const [categoryId, setCategoryId] = useState()
   const [status, setStatus] = useState()
@@ -60,7 +60,7 @@ const Borrowers = () => {
   const { data: users } = useUsers()
   const { data: borrower, isLoading } = useBorrowers({
     readerName: searchUserKey,
-    bookName: searchBookKey || search,
+    bookName: searchBookKey !== undefined ? searchBookKey : search,
     term,
     categoryId,
     isReturned: status === '1' || '',
