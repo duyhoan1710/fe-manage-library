@@ -1,8 +1,17 @@
-import { getRoles } from '../services/admin.service'
+import { getMe, getRoles } from '../services/admin.service'
 import { useQuery } from 'react-query'
-import { ACCOUNT, PROFILE, ROLES } from '../constants/queriesKey'
+import { ACCOUNT, GET_ME, PROFILE, ROLES } from '../constants/queriesKey'
 import { getAccounts } from '../services/admin.service'
 import jwt_decode from 'jwt-decode'
+
+export const useMe = () => {
+  const { data, isLoading, error } = useQuery(GET_ME, async () => {
+    const res = await getMe()
+    return res.data
+  })
+
+  return { data, isLoading, error }
+}
 
 export const useProfile = () => {
   const { data, isLoading, error } = useQuery(PROFILE, async () => {

@@ -48,3 +48,9 @@ export const updateInfo = async ({ userName, phoneNumber }) => {
 
   return res.data
 }
+
+export const getMe = async () => {
+  const res = await api.get('/accounts/get-me')
+
+  return res
+}

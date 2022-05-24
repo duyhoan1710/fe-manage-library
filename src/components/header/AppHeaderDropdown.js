@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   CAvatar,
   CButton,
@@ -29,9 +29,11 @@ import { changeInfoSchema, resetPasswordSchema } from './validate'
 import { useMutation } from 'react-query'
 import { resetPassword, updateInfo } from 'src/services/admin.service'
 import { toast } from 'react-toastify'
+import { useMe } from 'src/hooks/useAdmin'
 
 const AppHeaderDropdown = () => {
   const navigate = useNavigate()
+  const { data: me } = useMe()
 
   const logout = () => {
     localStorage.removeItem('accessToken')
@@ -46,6 +48,8 @@ const AppHeaderDropdown = () => {
       onSuccess: async () => {
         toast.success('Thay đổi thành công')
         setIsOpenModal(false)
+        localStorage.setItem('accessToken', '')
+        navigate('/login')
       },
     },
   )
@@ -58,6 +62,8 @@ const AppHeaderDropdown = () => {
       onSuccess: async () => {
         toast.success('Thay đổi thành công')
         setIsOpenModalInfo(false)
+        localStorage.setItem('accessToken', '')
+        navigate('/login')
       },
     },
   )
@@ -76,6 +82,7 @@ const AppHeaderDropdown = () => {
     initialValues: {
       userName: '',
       phoneNumber: '',
+      roleName: '',
     },
     validationSchema: changeInfoSchema,
     onSubmit: handleChangeAccountInfo,
@@ -83,6 +90,14 @@ const AppHeaderDropdown = () => {
 
   const [isOenModal, setIsOpenModal] = useState(false)
   const [isOenModalInfo, setIsOpenModalInfo] = useState(false)
+
+  useEffect(() => {
+    if (me) {
+      formikInfo.setFieldValue('userName', me.userName, false)
+      formikInfo.setFieldValue('phoneNumber', me.phoneNumber, false)
+      formikInfo.setFieldValue('roleName', me.roleName, false)
+    }
+  }, [me])
 
   return (
     <>
@@ -207,6 +222,23 @@ const AppHeaderDropdown = () => {
                   feedbackInvalid={formikInfo.errors?.phoneNumber}
                   invalid={!!formikInfo.errors?.phoneNumber}
                   onChange={formikInfo.handleChange}
+                />
+              </CCol>
+            </CRow>
+
+            <CRow className="mb-3">
+              <CFormLabel htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Vai Trò
+              </CFormLabel>
+              <CCol sm={8}>
+                <CFormInput
+                  type="text"
+                  name="roleName"
+                  value={formikInfo.values?.roleName}
+                  feedbackInvalid={formikInfo.errors?.roleName}
+                  invalid={!!formikInfo.errors?.roleName}
+                  onChange={formikInfo.handleChange}
+                  disabled
                 />
               </CCol>
             </CRow>
