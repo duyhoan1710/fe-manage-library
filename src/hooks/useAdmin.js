@@ -14,7 +14,7 @@ export const useMe = () => {
 }
 
 export const useProfile = () => {
-  const { data, isLoading, error } = useQuery(PROFILE, async () => {
+  const { data, isLoading, error } = useQuery(PROFILE, () => {
     // const res = await getAccounts()
     let data = jwt_decode(localStorage.accessToken)
 

@@ -10,6 +10,8 @@ import { useProfile } from 'src/hooks/useAdmin'
 const AppContent = () => {
   const { data: user } = useProfile()
 
+  console.log(user)
+
   return (
     <Suspense fallback={<CSpinner color="primary" />}>
       <Routes>

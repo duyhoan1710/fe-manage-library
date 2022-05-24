@@ -39,6 +39,7 @@ import Select from 'react-select'
 import Skeleton from 'react-loading-skeleton'
 import debounce from 'lodash.debounce'
 import { toast } from 'react-toastify'
+import { useLocation } from 'react-router-dom'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -52,12 +53,14 @@ const Borrowers = () => {
   const [status, setStatus] = useState()
   const [page, setPage] = useState(1)
 
+  const search = new URLSearchParams(useLocation().search).get('bookName')
+
   const { data: categories } = useCategory()
   const { data: books } = useBooks({})
   const { data: users } = useUsers()
   const { data: borrower, isLoading } = useBorrowers({
     readerName: searchUserKey,
-    bookName: searchBookKey,
+    bookName: searchBookKey || search,
     term,
     categoryId,
     isReturned: status === '1' || '',
@@ -138,7 +141,12 @@ const Borrowers = () => {
 
           <CCol md={2} xs="auto">
             <CFormLabel>Tên Sách</CFormLabel>
-            <CFormInput type="text" placeholder="Chí Phèo..." onChange={searchBook} />
+            <CFormInput
+              type="text"
+              placeholder="Chí Phèo..."
+              onChange={searchBook}
+              defaultValue={search}
+            />
           </CCol>
 
           <CCol md={2} xs="auto">
