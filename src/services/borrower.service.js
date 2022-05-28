@@ -26,6 +26,12 @@ export const getBorrower = async ({
   return res.data
 }
 
+export const analyticsBook = async () => {
+  const res = await api.get('/books/analyst-books')
+
+  return res.data
+}
+
 export const createBorrower = async ({ studentIdentify, bookIds, expiredDate }) => {
   const res = await api.post('/bookHirings/hire-books', { studentIdentify, bookIds, expiredDate })
 

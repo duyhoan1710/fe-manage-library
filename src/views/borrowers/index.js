@@ -61,7 +61,7 @@ const Borrowers = () => {
   const { data: borrower, isLoading } = useBorrowers({
     readerName: searchUserKey,
     bookName: searchBookKey !== undefined ? searchBookKey : search,
-    term,
+    term: term !== 'Lựa Chọn' ? term : '',
     categoryId,
     isReturned: status === '1' || '',
     isExpired: status === '2' || '',
@@ -102,7 +102,7 @@ const Borrowers = () => {
 
   const recordUpdate = useMemo(() => {
     if (updateBorrowerId) {
-      const data = borrower?.find((el) => el.id === updateBorrowerId)
+      const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
       return data
     }
     return {}
@@ -245,7 +245,7 @@ const Borrowers = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {borrower?.map((record, index) => (
+          {borrower?.data?.map((record, index) => (
             <CTableRow key={record.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
@@ -281,15 +281,21 @@ const Borrowers = () => {
       {isLoading && <Skeleton count={5} />}
 
       <CPagination align="end">
-        <CPaginationItem aria-label="Trang Trước">
+        <CPaginationItem aria-label="Trang Trước" disabled={page === 1}>
           <span aria-hidden="true">&laquo;</span>
         </CPaginationItem>
-        {Array.from({ length: 3 }, (_, i) => (
-          <CPaginationItem active={i + 1 === page} onClick={() => setPage(i + 1)}>
-            {i + 1}
-          </CPaginationItem>
-        ))}
-        <CPaginationItem aria-label="Next">
+        {Array.from(
+          { length: Math.round(borrower?.totalRecords / borrower?.pageSize) + 1 },
+          (_, i) => (
+            <CPaginationItem active={i + 1 === page} onClick={() => setPage(i + 1)}>
+              {i + 1}
+            </CPaginationItem>
+          ),
+        )}
+        <CPaginationItem
+          aria-label="Next"
+          disabled={page >= Math.round(books?.totalRecords / books?.pageSize) + 1}
+        >
           <span aria-hidden="true">&raquo;</span>
         </CPaginationItem>
       </CPagination>
