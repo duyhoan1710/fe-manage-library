@@ -206,10 +206,7 @@ const Books = () => {
       {preview && (
         <CModal visible={!!preview} onClose={() => setPreview(false)} alignment="center" size="xl">
           <CModalBody>
-            <embed
-              src={`https://drive.google.com/viewerng/viewer?url=${preview}&embedded=true`}
-              style={{ width: '100%', height: '75vh' }}
-            ></embed>
+            <embed src={preview} style={{ width: '100%', height: '75vh' }}></embed>
           </CModalBody>
           <CModalFooter>
             <CButton color="secondary" onClick={() => setPreview(false)}>
