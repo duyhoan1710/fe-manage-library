@@ -144,8 +144,10 @@ const Books = () => {
               <CTableDataCell>Kì {book.term}</CTableDataCell>
               <CTableDataCell>{formatDate(book.updatedAt || book.createdAt)}</CTableDataCell>
               {checkAdmin(user?.role) && (
-                <CTableDataCell className="d-flex justify-content-evenly mt-3">
-                  <CButton onClick={() => setUpdateBookId(book.id)}>Cập Nhật</CButton>
+                <CTableDataCell className="mt-3">
+                  <CButton onClick={() => setUpdateBookId(book.id)} className="mx-2">
+                    Cập Nhật
+                  </CButton>
                   <CButton
                     color="danger"
                     className="text-white"
@@ -204,10 +206,10 @@ const Books = () => {
       {preview && (
         <CModal visible={!!preview} onClose={() => setPreview(false)} alignment="center" size="xl">
           <CModalBody>
-            <iframe
+            <embed
               src={`https://drive.google.com/viewerng/viewer?url=${preview}&embedded=true`}
               style={{ width: '100%', height: '75vh' }}
-            ></iframe>
+            ></embed>
           </CModalBody>
           <CModalFooter>
             <CButton color="secondary" onClick={() => setPreview(false)}>

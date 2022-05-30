@@ -14,12 +14,11 @@ import {
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
 import { useAnalyticsBook } from 'src/hooks/useBorrower'
+import Skeleton from 'react-loading-skeleton'
 
 const Statistics = () => {
-  const [preview, setPreview] = useState(false)
-  const { data: analystBook } = useAnalyticsBook()
+  const { data: analystBook, isLoading } = useAnalyticsBook()
 
-  console.log(analystBook)
   const navigate = useNavigate()
 
   return (
@@ -63,10 +62,7 @@ const Statistics = () => {
                 <CTableDataCell>
                   <CImage rounded width={70} height={50} src={book.thumbnail} />
                 </CTableDataCell>
-                <CTableDataCell
-                  className="text-primary text-underline cursor-pointer"
-                  onClick={() => setPreview(book.pdfFile)}
-                >
+                <CTableDataCell className="text-primary text-underline cursor-pointer">
                   {book.title}
                 </CTableDataCell>
                 <CTableDataCell>{book.categoryCode}</CTableDataCell>
@@ -79,6 +75,8 @@ const Statistics = () => {
             ))}
           </CTableBody>
         </CTable>
+
+        {isLoading && <Skeleton count={5} />}
       </div>
     </div>
   )

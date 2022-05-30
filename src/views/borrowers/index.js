@@ -47,6 +47,7 @@ const Borrowers = () => {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [updateBorrowerId, setUpdateBorrowerId] = useState()
   const [searchUserKey, setSearchUserKey] = useState()
+  const [searchAddUser, setSearchAddUser] = useState()
   const [searchBookKey, setSearchBookKey] = useState(undefined)
   const [term, setTerm] = useState()
   const [categoryId, setCategoryId] = useState()
@@ -110,7 +111,7 @@ const Borrowers = () => {
 
   useEffect(() => {
     if (updateBorrowerId) {
-      const data = borrower?.find((el) => el.id === updateBorrowerId)
+      const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
       formik.setFieldValue('expiredDate', data.expiredDate, false)
       formik.setFieldValue('returnDate', data.returnedDate, false)
       formik.setFieldValue('note', data.note || '', false)
@@ -222,7 +223,13 @@ const Borrowers = () => {
         </CRow>
 
         <div className="d-flex align-items-center">
-          <CButton color="success" className="text-white" onClick={() => setIsOpenModal(true)}>
+          <CButton
+            color="success"
+            className="text-white"
+            onClick={() => {
+              setIsOpenModal(true)
+            }}
+          >
             Thêm Mới
           </CButton>
         </div>
@@ -271,7 +278,13 @@ const Borrowers = () => {
                 </span>
               </CTableDataCell>
               <CTableDataCell>
-                <CButton onClick={() => setUpdateBorrowerId(record.id)}>Cập Nhật</CButton>
+                <CButton
+                  onClick={() => {
+                    setUpdateBorrowerId(record.id)
+                  }}
+                >
+                  Cập Nhật
+                </CButton>
               </CTableDataCell>
             </CTableRow>
           ))}
@@ -339,8 +352,8 @@ const Borrowers = () => {
                 {users && (
                   <AutoCompleteComponent
                     items={users}
-                    searchKey={searchUserKey}
-                    setSearchKey={setSearchUserKey}
+                    searchKey={searchAddUser}
+                    setSearchKey={setSearchAddUser}
                     onSelect={(value) =>
                       formik.setFieldValue('studentIdentify', value.studentIdentify)
                     }
@@ -420,8 +433,8 @@ const Borrowers = () => {
                   {users && (
                     <AutoCompleteComponent
                       items={users}
-                      searchKey={searchUserKey}
-                      setSearchKey={setSearchUserKey}
+                      searchKey={searchAddUser}
+                      setSearchKey={setSearchAddUser}
                       onSelect={(value) =>
                         formik.setFieldValue('studentIdentify', value.studentIdentify)
                       }

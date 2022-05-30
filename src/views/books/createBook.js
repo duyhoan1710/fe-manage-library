@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { createBookSchema, updateBookSchema } from './validate'
 import PropTypes from 'prop-types'
 import { useCategory } from 'src/hooks/useCategory'
@@ -27,6 +27,8 @@ const {
 const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
   const { data: categories } = useCategory()
   const queryClient = useQueryClient()
+  const refBookAvatar = useRef()
+  const refBookFile = useRef()
 
   const { mutate: handleSubmit, isLoading } = useMutation(
     async ({ title, description, quantity, categoryId, term, thumbnail, pdfFile }) => {
@@ -80,6 +82,8 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
         pdfFile: undefined,
       })
     }
+
+    formik.setErrors({})
   }, [book])
 
   return (
@@ -88,6 +92,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       onClose={() => {
         onClose()
         formik.setValues({})
+        formik.setErrors({})
       }}
       alignment="center"
       size="lg"
@@ -97,133 +102,171 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       </CModalHeader>
 
       <CModalBody>
-        <CForm>
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="name" className="col-sm-4 col-form-label">
-              Tên Sách
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormInput
-                id="name"
-                type="text"
-                name="title"
-                feedbackInvalid={formik.errors?.title}
-                onChange={formik.handleChange}
-                invalid={!!formik.errors?.title}
-                value={formik.values?.title}
-              />
-            </CCol>
-          </CRow>
+        <CRow>
+          <CCol sm={1} />
+          <CCol sm={10}>
+            <CForm>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="name" className="col-sm-2 col-form-label">
+                  Tên Sách
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormInput
+                    id="name"
+                    type="text"
+                    name="title"
+                    feedbackInvalid={formik.errors?.title}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.title}
+                    value={formik.values?.title}
+                  />
+                </CCol>
+              </CRow>
 
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="quantity" className="col-sm-4 col-form-label">
-              Số Lượng
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormInput
-                id="quantity"
-                type="text"
-                name="quantity"
-                feedbackInvalid={formik.errors?.quantity}
-                onChange={formik.handleChange}
-                invalid={!!formik.errors?.quantity}
-                value={formik.values?.quantity}
-              />
-            </CCol>
-          </CRow>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="quantity" className="col-sm-2 col-form-label">
+                  Số Lượng
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormInput
+                    id="quantity"
+                    type="text"
+                    name="quantity"
+                    feedbackInvalid={formik.errors?.quantity}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.quantity}
+                    value={formik.values?.quantity}
+                  />
+                </CCol>
+              </CRow>
 
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="description" className="col-sm-4 col-form-label">
-              Mô tả
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormTextarea
-                id="description"
-                name="description"
-                rows="5"
-                text="Must be 8-20 words long."
-                feedbackInvalid={formik.errors?.description}
-                onChange={formik.handleChange}
-                invalid={!!formik.errors?.description}
-                value={formik.values?.description}
-              ></CFormTextarea>
-            </CCol>
-          </CRow>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="description" className="col-sm-2 col-form-label">
+                  Mô tả
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormTextarea
+                    id="description"
+                    name="description"
+                    rows="5"
+                    text="Must be 9-20 words long."
+                    feedbackInvalid={formik.errors?.description}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.description}
+                    value={formik.values?.description}
+                  ></CFormTextarea>
+                </CCol>
+              </CRow>
 
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="categoryId" className="col-sm-4 col-form-label">
-              Loại Sách
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormSelect
-                id="categoryId"
-                name="categoryId"
-                options={[
-                  { label: 'Lựa Chọn', value: null },
-                  ...(categories?.data?.map((category) => ({
-                    label: category.categoryName,
-                    value: category.id,
-                  })) || []),
-                ]}
-                feedbackInvalid={formik.errors?.categoryId}
-                onChange={formik.handleChange}
-                invalid={!!formik.errors?.categoryId}
-                value={formik.values?.categoryId}
-              />
-            </CCol>
-          </CRow>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="categoryId" className="col-sm-2 col-form-label">
+                  Loại Sách
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormSelect
+                    id="categoryId"
+                    name="categoryId"
+                    options={[
+                      { label: 'Lựa Chọn', value: null },
+                      ...(categories?.data?.map((category) => ({
+                        label: category.categoryName,
+                        value: category.id,
+                      })) || []),
+                    ]}
+                    feedbackInvalid={formik.errors?.categoryId}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.categoryId}
+                    value={formik.values?.categoryId}
+                  />
+                </CCol>
+              </CRow>
 
-          <CRow className="mb-3">
-            <CFormLabel className="col-sm-4 col-form-label">Kì Học</CFormLabel>
-            <CCol sm={8}>
-              <CFormSelect
-                name="term"
-                options={[
-                  { label: 'Lựa Chọn', value: null },
-                  ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
-                ]}
-                feedbackInvalid={formik.errors?.term}
-                onChange={formik.handleChange}
-                invalid={!!formik.errors?.term}
-                value={formik.values?.term}
-              />
-            </CCol>
-          </CRow>
+              <CRow className="mb-3">
+                <CFormLabel className="col-sm-2 col-form-label">Kì Học</CFormLabel>
+                <CCol sm={9}>
+                  <CFormSelect
+                    name="term"
+                    options={[
+                      { label: 'Lựa Chọn', value: null },
+                      ...Array.from({ length: 9 }, (_, i) => ({
+                        label: `Kì ${i + 1}`,
+                        value: i + 1,
+                      })),
+                    ]}
+                    feedbackInvalid={formik.errors?.term}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.term}
+                    value={formik.values?.term}
+                  />
+                </CCol>
+              </CRow>
 
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="thumbnail" className="col-sm-4 col-form-label">
-              Ảnh Sách
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormInput
-                type="file"
-                id="thumbnail"
-                name="thumbnail"
-                feedbackInvalid={formik.errors?.thumbnail}
-                onChange={(event) => formik.setFieldValue('thumbnail', event.target.files[0])}
-                invalid={!!formik.errors?.thumbnail}
-                // value={formik.values?.thumbnail}
-              />
-            </CCol>
-          </CRow>
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="thumbnail" className="col-sm-2 col-form-label">
+                  Ảnh Sách
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormInput
+                    type="file"
+                    id="thumbnail"
+                    name="thumbnail"
+                    className="hidden"
+                    feedbackInvalid={formik.errors?.thumbnail}
+                    onChange={(event) => formik.setFieldValue('thumbnail', event.target.files[0])}
+                    invalid={!!formik.errors?.thumbnail}
+                    ref={refBookAvatar}
+                  />
 
-          <CRow className="mb-3">
-            <CFormLabel htmlFor="pdfFile" className="col-sm-4 col-form-label">
-              PDF File
-            </CFormLabel>
-            <CCol sm={8}>
-              <CFormInput
-                type="file"
-                id="formFile"
-                name="pdfFile"
-                feedbackInvalid={formik.errors?.pdfFile}
-                onChange={(event) => formik.setFieldValue('pdfFile', event.target.files[0])}
-                invalid={!!formik.errors?.pdfFile}
-                // value={formik.values?.pdfFile}
-              />
-            </CCol>
-          </CRow>
-        </CForm>
+                  <div className="d-flex align-items-center">
+                    <CButton
+                      className="me-3 px-4 bg-secondary"
+                      onClick={() => refBookAvatar.current.click()}
+                    >
+                      Chọn File
+                    </CButton>
+                    <div className="input-file">
+                      {formik.values?.thumbnail?.name ||
+                        book?.thumbnail?.substring(107) ||
+                        'No File Choose'}
+                    </div>
+                  </div>
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="pdfFile" className="col-sm-2 col-form-label">
+                  PDF File
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormInput
+                    type="file"
+                    id="formFile"
+                    name="pdfFile"
+                    className="hidden"
+                    feedbackInvalid={formik.errors?.pdfFile}
+                    onChange={(event) => formik.setFieldValue('pdfFile', event.target.files[0])}
+                    invalid={!!formik.errors?.pdfFile}
+                    ref={refBookFile}
+                  />
+
+                  <div className="d-flex align-items-center">
+                    <CButton
+                      className="me-3 px-4 bg-secondary"
+                      onClick={() => refBookFile.current.click()}
+                    >
+                      Chọn File
+                    </CButton>
+                    <div className="input-file">
+                      {formik.values?.pdfFile?.name ||
+                        book?.pdfFile?.substring(101) ||
+                        'No File Choose'}
+                    </div>
+                  </div>
+                </CCol>
+              </CRow>
+            </CForm>
+          </CCol>
+        </CRow>
       </CModalBody>
 
       <CModalFooter>
@@ -232,6 +275,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
           onClick={() => {
             onClose()
             formik.setValues({})
+            formik.setErrors({})
           }}
         >
           Đóng

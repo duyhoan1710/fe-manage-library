@@ -120,8 +120,10 @@ const Admin = () => {
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>{record.userName}</CTableDataCell>
               <CTableDataCell>{record.roleName}</CTableDataCell>
-              <CTableDataCell className="d-flex justify-content-evenly mt-3">
-                <CButton onClick={() => setUpdateAccountId(record.id)}>Cập Nhật</CButton>
+              <CTableDataCell className="mt-3">
+                <CButton onClick={() => setUpdateAccountId(record.id)} className="mx-2">
+                  Cập Nhật
+                </CButton>
                 <CButton
                   color="danger"
                   className="text-white"

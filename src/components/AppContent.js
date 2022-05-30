@@ -1,7 +1,6 @@
-import React, { Suspense } from 'react'
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
+import React, { Suspense, useEffect } from 'react'
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { CSpinner } from '@coreui/react'
-import { isAuthenticated } from '../helpers/isAuthenticated'
 
 // routes config
 import routes from '../routers/routes'
@@ -9,8 +8,18 @@ import { useProfile } from 'src/hooks/useAdmin'
 
 const AppContent = () => {
   const { data: user } = useProfile()
+  const navigator = useNavigate()
+  const location = useLocation()
 
-  console.log(user)
+  useEffect(() => {
+    if (user) {
+      routes.forEach((route) => {
+        if (route.path === location.pathname && !route.roles.includes(user?.role)) {
+          navigator('/login')
+        }
+      })
+    }
+  }, [user])
 
   return (
     <Suspense fallback={<CSpinner color="primary" />}>
@@ -21,13 +30,7 @@ const AppContent = () => {
             path={route.path}
             exact={route.exact}
             name={route.name}
-            element={
-              !route.roles.includes(user?.role) ? (
-                <Navigate to="/login" replace />
-              ) : (
-                <route.element />
-              )
-            }
+            element={<route.element />}
           />
         ))}
         <Route path="*" element={<Navigate to="404" replace />} />

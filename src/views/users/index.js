@@ -59,7 +59,7 @@ const Users = () => {
             <CTableRow key={record.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded width={70} height={60} src={record.thumbnail || UserImage} />
+                <CImage rounded width={70} height={50} src={record.thumbnail || UserImage} />
               </CTableDataCell>
               <CTableDataCell>{record.studentIdentify}</CTableDataCell>
               <CTableDataCell>{record.name}</CTableDataCell>

@@ -122,7 +122,6 @@ const Categories = () => {
             <CTableHeaderCell>Thứ tự</CTableHeaderCell>
             <CTableHeaderCell>Ảnh nền</CTableHeaderCell>
             <CTableHeaderCell>Tên</CTableHeaderCell>
-            <CTableHeaderCell>Phụ đề</CTableHeaderCell>
             <CTableHeaderCell className="w-200">Cập nhật Lần Cuối</CTableHeaderCell>
             {checkAdmin(user?.role) && <CTableHeaderCell className="action-column" />}
           </CTableRow>
@@ -132,19 +131,19 @@ const Categories = () => {
             <CTableRow key={category.id}>
               <CTableHeaderCell>{index + 1}</CTableHeaderCell>
               <CTableDataCell>
-                <CImage rounded width={70} height={70} src={category.thumbnail} />
+                <CImage rounded width={70} height={50} src={category.thumbnail} />
               </CTableDataCell>
               <CTableDataCell>{category.categoryName}</CTableDataCell>
-              <CTableDataCell>{category.subtitle}</CTableDataCell>
               <CTableDataCell>10/5/2022</CTableDataCell>
               {checkAdmin(user?.role) && (
-                <CTableDataCell className="d-flex justify-content-evenly mt-3">
+                <CTableDataCell className="mt-3">
                   <CButton
                     onClick={() => {
                       setUpdateCategoryId(category.id)
                       formik.setFieldValue('categoryName', category.categoryName, false)
                       formik.setFieldValue('subtitle', category.subtitle, false)
                     }}
+                    className="mx-2"
                   >
                     Cập Nhật
                   </CButton>
