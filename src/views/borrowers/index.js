@@ -274,7 +274,7 @@ const Borrowers = () => {
                       : 'text-success'
                   }`}
                 >
-                  {formatDate(record.returnedDate) || 'Chưa Trả'}
+                  {formatDate(record.returnedDate) || '---'}
                 </span>
               </CTableDataCell>
               <CTableDataCell>
