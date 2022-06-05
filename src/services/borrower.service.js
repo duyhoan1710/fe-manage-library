@@ -69,12 +69,20 @@ export const createBorrower = async ({ studentIdentify, bookIds, expiredDate, is
   return res.data
 }
 
-export const updateBorrower = async ({ borrowerId, expiredDate, returnDate, note, isNewBook }) => {
+export const updateBorrower = async ({
+  borrowerId,
+  expiredDate,
+  returnDate,
+  note,
+  isNewBook,
+  hiredDate,
+}) => {
   const res = await api.put(`/bookHirings/hiring-books/${borrowerId}`, {
     returnDate,
     note,
     expiredDate,
     isNewBook,
+    hiredDate,
   })
 
   return res.data
