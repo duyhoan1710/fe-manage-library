@@ -24,6 +24,13 @@ const _nav = [
   },
   {
     component: CNavItem,
+    name: 'Mượn - Trả (Dự Kiến)',
+    to: '/promise-borrowers',
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
+    roles: ['Admin', 'Librarier'],
+  },
+  {
+    component: CNavItem,
     name: 'Mượn - Trả',
     to: '/borrowers',
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,

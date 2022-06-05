@@ -99,11 +99,13 @@ const AppHeaderDropdown = () => {
     }
   }, [me])
 
+  console.log(me)
+
   return (
     <>
       <CDropdown variant="nav-item">
         <CDropdownToggle placement="bottom-end" className="py-0" caret={true}>
-          <CAvatar src={avatar8} size="md" />
+          <div className="avatar bg-warning text-white avatar">{me?.userName[0]}</div>
         </CDropdownToggle>
         <CDropdownMenu className="pt-0" placement="bottom-end">
           <CDropdownHeader className="bg-light fw-semibold py-2">Settings</CDropdownHeader>

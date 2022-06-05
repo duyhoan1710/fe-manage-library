@@ -13,11 +13,15 @@ import {
   CTableRow,
 } from '@coreui/react'
 import { useNavigate } from 'react-router-dom'
-import { useAnalyticsBook } from 'src/hooks/useBorrower'
+import { useAnalyticsBook, useMostBookInMonth } from 'src/hooks/useBorrower'
 import Skeleton from 'react-loading-skeleton'
+import { CChart } from '@coreui/react-chartjs'
+import DatePicker from 'react-datepicker'
 
 const Statistics = () => {
+  const [year, setYear] = useState(new Date())
   const { data: analystBook, isLoading } = useAnalyticsBook()
+  const { data: bookInMonth } = useMostBookInMonth({ year: new Date(year).getFullYear() })
 
   const navigate = useNavigate()
 
@@ -35,6 +39,10 @@ const Statistics = () => {
         <CCol md={3}>
           <CAlert color="danger">Số Sách Quá Hạn: {analystBook?.totalExpired}</CAlert>
         </CCol>
+
+        <CCol md={3}>
+          <CAlert color="warning">Số Sách Hỏng: {analystBook?.totalExpired}</CAlert>
+        </CCol>
       </CRow>
 
       <div className="mt-5">
@@ -50,6 +58,7 @@ const Statistics = () => {
               <CTableHeaderCell>Số Lượng Đang Mượn</CTableHeaderCell>
               <CTableHeaderCell>Số Lượng Đã Trả</CTableHeaderCell>
               <CTableHeaderCell>Số Lượng Quá Hạn</CTableHeaderCell>
+              <CTableHeaderCell>Số Lượng Hỏng</CTableHeaderCell>
             </CTableRow>
           </CTableHead>
           <CTableBody>
@@ -71,6 +80,7 @@ const Statistics = () => {
                 <CTableDataCell>{book.totalHiring}</CTableDataCell>
                 <CTableDataCell>{book.totalReturned}</CTableDataCell>
                 <CTableDataCell>{book.totalExpired}</CTableDataCell>
+                <CTableDataCell>{book.totalExpired}</CTableDataCell>
               </CTableRow>
             ))}
           </CTableBody>
@@ -78,6 +88,72 @@ const Statistics = () => {
 
         {isLoading && <Skeleton count={5} />}
       </div>
+
+      <CRow className="pt-5">
+        <CCol md={1} />
+        <CCol md={3}>
+          <DatePicker
+            id="esimatingHiredDate"
+            name="esimatingHiredDate"
+            className="datePicker"
+            selected={year}
+            dateFormat="yyyy"
+            placeholderText="Chọn Năm"
+            onChange={(value) => setYear(value)}
+            showYearPicker
+          />
+        </CCol>
+      </CRow>
+
+      <CRow className="pt-3">
+        <CCol md={1} />
+        <CCol md={10}>
+          <CChart
+            type="bar"
+            data={{
+              labels: [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December',
+              ],
+              datasets: [
+                {
+                  label: 'Biểu Đồ Thống Kê Sách Được Mượn Nhiều Nhất Trong Tháng',
+                  backgroundColor: '#f87979',
+                  data: bookInMonth ? [...bookInMonth?.map((book) => book.quality), 10] : [],
+                  barPercentage: '0.5',
+                },
+              ],
+            }}
+            labels="months"
+            options={{
+              plugins: {
+                tooltip: {
+                  callbacks: {
+                    label: function (tooltipItem) {
+                      return (
+                        bookInMonth.find((book, index) => index === tooltipItem.dataIndex)
+                          ?.bookName +
+                        ': ' +
+                        tooltipItem.raw
+                      )
+                    },
+                  },
+                },
+              },
+            }}
+          />
+        </CCol>
+      </CRow>
     </div>
   )
 }

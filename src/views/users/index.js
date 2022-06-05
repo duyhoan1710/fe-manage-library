@@ -13,11 +13,12 @@ import {
   CTableRow,
 } from '@coreui/react'
 import React from 'react'
+import Skeleton from 'react-loading-skeleton'
 import { useUsers } from 'src/hooks/useUser'
 import UserImage from '../../assets/images/hacker.png'
 
 const Users = () => {
-  const { data: users } = useUsers()
+  const { data: users, isLoading } = useUsers()
 
   return (
     <div>
@@ -72,6 +73,8 @@ const Users = () => {
           ))}
         </CTableBody>
       </CTable>
+
+      {isLoading && <Skeleton count={5} />}
     </div>
   )
 }

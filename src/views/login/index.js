@@ -8,6 +8,7 @@ import {
   CContainer,
   CForm,
   CFormInput,
+  CImage,
   CInputGroup,
   CInputGroupText,
   CRow,
@@ -21,6 +22,7 @@ import { useMutation } from 'react-query'
 
 import { login } from '../../services/auth.service'
 import { toast } from 'react-toastify'
+import logoKma from 'src/assets/images/logo-kma.png'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -50,12 +52,18 @@ const Login = () => {
   })
 
   return (
-    <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
-      <CContainer>
+    <div className="min-vh-100 d-flex flex-column">
+      <div className="py-3 px-5 d-flex align-items-center border-bottom">
+        <CImage src={logoKma} width={100} height={100} />
+
+        <h2 className="ms-3">Học Viện Kĩ Thuật Mật Mã</h2>
+      </div>
+
+      <CContainer className="mx-auto py-5 my-5">
         <CRow className="justify-content-center">
           <CCol md={6}>
             <CCardGroup>
-              <CCard className="p-4">
+              <CCard className="p-4 bg-login">
                 <CCardBody>
                   <CForm>
                     <h1>Xin Chào,...</h1>
