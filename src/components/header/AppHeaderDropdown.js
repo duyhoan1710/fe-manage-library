@@ -99,8 +99,6 @@ const AppHeaderDropdown = () => {
     }
   }, [me])
 
-  console.log(me)
-
   return (
     <>
       <CDropdown variant="nav-item">

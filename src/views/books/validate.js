@@ -8,6 +8,7 @@ export const createBookSchema = Yup.object({
   term: Yup.number().required(),
   thumbnail: Yup.mixed().required(),
   pdfFile: Yup.mixed().required(),
+  totalWrongBooks: Yup.number().required(),
 })
 
 export const updateBookSchema = Yup.object({
@@ -18,4 +19,5 @@ export const updateBookSchema = Yup.object({
   term: Yup.number().required(),
   thumbnail: Yup.mixed(),
   pdfFile: Yup.mixed(),
+  totalWrongBooks: Yup.number().required(),
 })

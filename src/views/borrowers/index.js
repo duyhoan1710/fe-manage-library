@@ -72,8 +72,15 @@ const Borrowers = () => {
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
     async () => {
       const res = updateBorrowerId
-        ? await updateBorrower({ borrowerId: updateBorrowerId, ...formik.values })
-        : await createBorrower({ ...formik.values })
+        ? await updateBorrower({
+            borrowerId: updateBorrowerId,
+            ...formik.values,
+            isNewBook: Boolean(Number(formik.values.isNewBook)),
+          })
+        : await createBorrower({
+            ...formik.values,
+            isNewBook: Boolean(Number(formik.values.isNewBook)),
+          })
 
       return res.data
     },
@@ -96,6 +103,7 @@ const Borrowers = () => {
       expiredDate: '',
       returnDate: '',
       note: '',
+      isNewBook: '',
     },
     validationSchema: updateBorrowerId ? updateBorrowerSchema : createBorrowerSchema,
     onSubmit: onSubmit,
@@ -115,6 +123,7 @@ const Borrowers = () => {
       formik.setFieldValue('expiredDate', data.expiredDate, false)
       formik.setFieldValue('returnDate', data.returnedDate, false)
       formik.setFieldValue('note', data.note || '', false)
+      formik.setFieldValue('isNewBook', data.isNewBook, false)
     }
   }, [updateBorrowerId])
 
@@ -242,6 +251,7 @@ const Borrowers = () => {
             <CTableHeaderCell>Ảnh</CTableHeaderCell>
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
             <CTableHeaderCell>Loại Sách</CTableHeaderCell>
+            <CTableHeaderCell>Trạng Thái Sách</CTableHeaderCell>
             <CTableHeaderCell>Kì Học</CTableHeaderCell>
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
             <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
@@ -260,6 +270,7 @@ const Borrowers = () => {
               </CTableDataCell>
               <CTableDataCell>{record.title}</CTableDataCell>
               <CTableDataCell>{record.categoryCode}</CTableDataCell>
+              <CTableDataCell>{record.isNewBook ? 'Sách Mới' : 'Sách Cũ'}</CTableDataCell>
               <CTableDataCell>Kì {record.term}</CTableDataCell>
               <CTableDataCell>{record.studentName}</CTableDataCell>
               <CTableDataCell>{record.studentIdentify}</CTableDataCell>
@@ -345,6 +356,21 @@ const Borrowers = () => {
             </CRow>
 
             <CRow className="mb-3">
+              <CFormLabel htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                Trạng Thái Sách
+              </CFormLabel>
+              <CCol sm={8}>
+                <CFormSelect name="isNewBook" onChange={formik.handleChange}>
+                  <option disabled>Lựa Chọn</option>
+                  <option value={1}>Sách Mới</option>
+                  <option value={0}>Sách Cũ</option>
+                </CFormSelect>
+
+                {formik.errors.isNewBook && <div className="error">{formik.errors.bookIds}</div>}
+              </CCol>
+            </CRow>
+
+            <CRow className="mb-3">
               <CFormLabel htmlFor="studentIdentify" className="col-sm-4 col-form-label">
                 Người Đọc
               </CFormLabel>
@@ -422,6 +448,21 @@ const Borrowers = () => {
                       value={{ label: recordUpdate.title, value: recordUpdate.bookId }}
                     />
                   )}
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="staticEmail" className="col-sm-4 col-form-label">
+                  Trạng Thái Sách
+                </CFormLabel>
+                <CCol sm={8}>
+                  <CFormSelect name="isNewBook" onChange={formik.handleChange}>
+                    <option disabled>Lựa Chọn</option>
+                    <option value={1}>Sách Mới</option>
+                    <option value={0}>Sách Cũ</option>
+                  </CFormSelect>
+
+                  {formik.errors.isNewBook && <div className="error">{formik.errors.bookIds}</div>}
                 </CCol>
               </CRow>
 

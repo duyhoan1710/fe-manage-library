@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   CButton,
   CCol,
@@ -11,12 +12,39 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CPopover,
 } from '@coreui/react'
 import React from 'react'
 import Skeleton from 'react-loading-skeleton'
 import { useUsers } from 'src/hooks/useUser'
 import UserImage from '../../assets/images/hacker.png'
 
+const TableData = ({ data }) => {
+  return (
+    <CTable bordered hover align="middle">
+      <CTableHead>
+        <CTableRow>
+          <CTableHeaderCell>Thứ Tự</CTableHeaderCell>
+          <CTableHeaderCell>Ảnh Sách</CTableHeaderCell>
+          <CTableHeaderCell>Tên Sách</CTableHeaderCell>
+          <CTableHeaderCell>Loại Sách</CTableHeaderCell>
+        </CTableRow>
+      </CTableHead>
+      <CTableBody>
+        {data?.map((record, index) => (
+          <CTableRow key={record.id}>
+            <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+            <CTableDataCell>
+              <CImage rounded width={70} height={50} src={record.thumbnail || UserImage} />
+            </CTableDataCell>
+            <CTableDataCell>{record.title}</CTableDataCell>
+            <CTableDataCell>{record.categoryCode}</CTableDataCell>
+          </CTableRow>
+        ))}
+      </CTableBody>
+    </CTable>
+  )
+}
 const Users = () => {
   const { data: users, isLoading } = useUsers()
 
@@ -66,9 +94,48 @@ const Users = () => {
               <CTableDataCell>{record.name}</CTableDataCell>
               <CTableDataCell>{record.email}</CTableDataCell>
               <CTableDataCell>{record.numberPhone}</CTableDataCell>
-              <CTableDataCell>{record.totalHiring}</CTableDataCell>
-              <CTableDataCell>{record.totalReturned}</CTableDataCell>
-              <CTableDataCell>{record.totalExpired}</CTableDataCell>
+              <CTableDataCell>
+                {!!record.hiringBooks.bookDtos.length ? (
+                  <CPopover
+                    content={<TableData data={record.hiringBooks.bookDtos} />}
+                    placement="bottom"
+                    trigger="hover"
+                    className="popover bs-popover-bottom fade show custom-popover"
+                  >
+                    <div className="cursor-pointer">{record.totalHiring}</div>
+                  </CPopover>
+                ) : (
+                  record.totalHiring
+                )}
+              </CTableDataCell>
+              <CTableDataCell>
+                {!!record.returnedBooks.bookDtos.length ? (
+                  <CPopover
+                    content={<TableData data={record.returnedBooks.bookDtos} />}
+                    placement="bottom"
+                    trigger="hover"
+                    className="popover bs-popover-bottom fade show custom-popover"
+                  >
+                    <div className="cursor-pointer">{record.totalReturned}</div>
+                  </CPopover>
+                ) : (
+                  record.totalHiring
+                )}
+              </CTableDataCell>
+              <CTableDataCell>
+                {!!record.expiredBooks.bookDtos.length ? (
+                  <CPopover
+                    content={<TableData data={record.expiredBooks.bookDtos} />}
+                    placement="bottom"
+                    trigger="hover"
+                    className="popover bs-popover-bottom fade show custom-popover"
+                  >
+                    <div className="cursor-pointer">{record.totalExpired}</div>
+                  </CPopover>
+                ) : (
+                  record.totalHiring
+                )}
+              </CTableDataCell>
             </CTableRow>
           ))}
         </CTableBody>

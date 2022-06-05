@@ -31,11 +31,21 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
   const refBookFile = useRef()
 
   const { mutate: handleSubmit, isLoading } = useMutation(
-    async ({ title, description, quantity, categoryId, term, thumbnail, pdfFile }) => {
+    async ({
+      title,
+      description,
+      quantity,
+      categoryId,
+      term,
+      thumbnail,
+      pdfFile,
+      totalWrongBooks,
+    }) => {
       const formData = new FormData()
       formData.append('title', title)
       formData.append('description', description)
       formData.append('quantity', quantity)
+      formData.append('totalWrongBooks', totalWrongBooks)
       formData.append('term', term)
       formData.append('categoryId', categoryId)
       formData.append('thumbnail', thumbnail)
@@ -64,6 +74,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
       title: '',
       description: '',
       quantity: '',
+      totalWrongBooks: '',
       categoryId: '',
       term: '',
       thumbnail: '',
@@ -103,11 +114,10 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
 
       <CModalBody>
         <CRow>
-          <CCol sm={1} />
-          <CCol sm={10}>
+          <CCol sm={12}>
             <CForm>
               <CRow className="mb-3">
-                <CFormLabel htmlFor="name" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="name" className="col-sm-3 col-form-label">
                   Tên Sách
                 </CFormLabel>
                 <CCol sm={9}>
@@ -124,7 +134,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel htmlFor="quantity" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="quantity" className="col-sm-3 col-form-label">
                   Số Lượng
                 </CFormLabel>
                 <CCol sm={9}>
@@ -141,7 +151,24 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel htmlFor="description" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="totalWrongBooks" className="col-sm-3 col-form-label">
+                  Số Sách Hỏng
+                </CFormLabel>
+                <CCol sm={9}>
+                  <CFormInput
+                    id="totalWrongBooks"
+                    type="text"
+                    name="totalWrongBooks"
+                    feedbackInvalid={formik.errors?.totalWrongBooks}
+                    onChange={formik.handleChange}
+                    invalid={!!formik.errors?.totalWrongBooks}
+                    value={formik.values?.totalWrongBooks}
+                  />
+                </CCol>
+              </CRow>
+
+              <CRow className="mb-3">
+                <CFormLabel htmlFor="description" className="col-sm-3 col-form-label">
                   Mô tả
                 </CFormLabel>
                 <CCol sm={9}>
@@ -159,7 +186,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel htmlFor="categoryId" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="categoryId" className="col-sm-3 col-form-label">
                   Loại Sách
                 </CFormLabel>
                 <CCol sm={9}>
@@ -182,7 +209,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel className="col-sm-2 col-form-label">Kì Học</CFormLabel>
+                <CFormLabel className="col-sm-3 col-form-label">Kì Học</CFormLabel>
                 <CCol sm={9}>
                   <CFormSelect
                     name="term"
@@ -202,7 +229,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel htmlFor="thumbnail" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="thumbnail" className="col-sm-3 col-form-label">
                   Ảnh Sách
                 </CFormLabel>
                 <CCol sm={9}>
@@ -234,7 +261,7 @@ const CreateBookComponent = ({ isOpen, onClose, updateBookId, book = {} }) => {
               </CRow>
 
               <CRow className="mb-3">
-                <CFormLabel htmlFor="pdfFile" className="col-sm-2 col-form-label">
+                <CFormLabel htmlFor="pdfFile" className="col-sm-3 col-form-label">
                   PDF File
                 </CFormLabel>
                 <CCol sm={9}>

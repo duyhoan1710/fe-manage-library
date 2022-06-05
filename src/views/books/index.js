@@ -121,6 +121,7 @@ const Books = () => {
             <CTableHeaderCell>Tên Sách</CTableHeaderCell>
             <CTableHeaderCell>Loại Sách</CTableHeaderCell>
             <CTableHeaderCell>Số Lượng</CTableHeaderCell>
+            <CTableHeaderCell>Số Sách Hỏng</CTableHeaderCell>
             <CTableHeaderCell>Kì Học</CTableHeaderCell>
             <CTableHeaderCell>Cập nhật Lần Cuối</CTableHeaderCell>
             {checkAdmin(user?.role) && <CTableHeaderCell className="action-column" />}
@@ -141,6 +142,7 @@ const Books = () => {
               </CTableDataCell>
               <CTableDataCell>{book.categoryCode}</CTableDataCell>
               <CTableDataCell>{book.quantity}</CTableDataCell>
+              <CTableDataCell>{book.totalWrongBooks}</CTableDataCell>
               <CTableDataCell>Kì {book.term}</CTableDataCell>
               <CTableDataCell>{formatDate(book.updatedAt || book.createdAt)}</CTableDataCell>
               {checkAdmin(user?.role) && (

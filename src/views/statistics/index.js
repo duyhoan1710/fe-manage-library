@@ -41,7 +41,7 @@ const Statistics = () => {
         </CCol>
 
         <CCol md={3}>
-          <CAlert color="warning">Số Sách Hỏng: {analystBook?.totalExpired}</CAlert>
+          <CAlert color="warning">Số Sách Hỏng: {analystBook?.totalWrongBooks}</CAlert>
         </CCol>
       </CRow>
 
@@ -80,7 +80,7 @@ const Statistics = () => {
                 <CTableDataCell>{book.totalHiring}</CTableDataCell>
                 <CTableDataCell>{book.totalReturned}</CTableDataCell>
                 <CTableDataCell>{book.totalExpired}</CTableDataCell>
-                <CTableDataCell>{book.totalExpired}</CTableDataCell>
+                <CTableDataCell>{book.totalWrongBooks}</CTableDataCell>
               </CTableRow>
             ))}
           </CTableBody>

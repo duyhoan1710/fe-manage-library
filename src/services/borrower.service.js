@@ -58,17 +58,23 @@ export const analyticsBook = async () => {
   return res.data
 }
 
-export const createBorrower = async ({ studentIdentify, bookIds, expiredDate }) => {
-  const res = await api.post('/bookHirings/hire-books', { studentIdentify, bookIds, expiredDate })
+export const createBorrower = async ({ studentIdentify, bookIds, expiredDate, isNewBook }) => {
+  const res = await api.post('/bookHirings/hire-books', {
+    studentIdentify,
+    bookIds,
+    expiredDate,
+    isNewBook,
+  })
 
   return res.data
 }
 
-export const updateBorrower = async ({ borrowerId, expiredDate, returnDate, note }) => {
+export const updateBorrower = async ({ borrowerId, expiredDate, returnDate, note, isNewBook }) => {
   const res = await api.put(`/bookHirings/hiring-books/${borrowerId}`, {
     returnDate,
     note,
     expiredDate,
+    isNewBook,
   })
 
   return res.data
