@@ -40,6 +40,7 @@ import Skeleton from 'react-loading-skeleton'
 import debounce from 'lodash.debounce'
 import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
+import { BORROWER } from 'src/constants/queriesKey'
 
 const Borrowers = () => {
   const queryCache = useQueryClient()
@@ -87,7 +88,7 @@ const Borrowers = () => {
     {
       onSuccess: async () => {
         onClose()
-        await queryCache.invalidateQueries()
+        await queryCache.invalidateQueries(BORROWER)
         toast.success('Thay Đổi Thành Công')
       },
       onError: () => {
@@ -100,6 +101,7 @@ const Borrowers = () => {
     initialValues: {
       studentIdentify: '',
       bookIds: [],
+      hiredDate: '',
       expiredDate: '',
       returnDate: '',
       note: '',
@@ -120,6 +122,7 @@ const Borrowers = () => {
   useEffect(() => {
     if (updateBorrowerId) {
       const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
+      formik.setFieldValue('hiredDate', data.hiredFrom, false)
       formik.setFieldValue('expiredDate', data.expiredDate, false)
       formik.setFieldValue('returnDate', data.returnedDate, false)
       formik.setFieldValue('note', data.note || '', false)
@@ -494,10 +497,10 @@ const Borrowers = () => {
                 <CCol sm={8}>
                   <DatePicker
                     id="hireFrom"
-                    name="hireFrom"
+                    name="hiredDate"
                     className="datePicker"
-                    selected={recordUpdate.hiredFrom && new Date(recordUpdate.hiredFrom)}
-                    disabled={true}
+                    selected={formik.values?.hiredDate && new Date(formik.values?.hiredDate)}
+                    onChange={(value) => formik.setFieldValue('hiredDate', value || '')}
                     dateFormat="dd/MM/yyyy"
                   />
                 </CCol>

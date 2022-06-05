@@ -40,6 +40,7 @@ import Skeleton from 'react-loading-skeleton'
 import debounce from 'lodash.debounce'
 import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
+import * as dayjs from 'dayjs'
 
 const PromiseBorrowers = () => {
   const queryCache = useQueryClient()
@@ -114,7 +115,11 @@ const PromiseBorrowers = () => {
     if (updateBorrowerId) {
       const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
       formik.setFieldValue('hiredDate', data.hiredFrom, false)
-      formik.setFieldValue('expiredDate', data.expiredDate, false)
+      formik.setFieldValue(
+        'expiredDate',
+        data.expiredDate || dayjs(new Date()).add(2, 'M').format('YYYY-MM-DD'),
+        false,
+      )
       formik.setFieldValue('returnDate', data.returnedDate, false)
       formik.setFieldValue('note', data.note || '', false)
     }
@@ -132,6 +137,8 @@ const PromiseBorrowers = () => {
   const searchBook = debounce((e) => {
     setSearchBookKey(e.target.value)
   }, 500)
+
+  console.log(formik.values)
 
   return (
     <div>
@@ -340,7 +347,6 @@ const PromiseBorrowers = () => {
                     dateFormat="dd/MM/yyyy"
                     selected={formik.values?.expiredDate && new Date(formik.values?.expiredDate)}
                     onChange={(value) => formik.setFieldValue('expiredDate', value || '')}
-                    disabled={true}
                   />
 
                   {formik.errors.expiredDate && (
