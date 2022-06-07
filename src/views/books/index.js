@@ -45,9 +45,16 @@ const Books = () => {
   const [preview, setPreview] = useState(false)
   const [searchKey, setSearchKey] = useState('')
   const [page, setPage] = useState(1)
+  const [term, setTerm] = useState()
+  const [categoryId, setCategoryId] = useState()
 
   const { data: categories } = useCategory()
-  const { data: books, isLoading } = useBooks({ searchKey, pageNumber: page })
+  const { data: books, isLoading } = useBooks({
+    searchKey,
+    pageNumber: page,
+    term: term !== 'Lựa Chọn' ? term : '',
+    categoryId,
+  })
   const { data: user } = useProfile()
 
   const onClose = () => {
@@ -86,20 +93,42 @@ const Books = () => {
             <CFormInput id="name" type="text" placeholder="Chí Phèo..." onChange={searchBook} />
           </CCol>
 
-          <CCol md={3} xs="auto">
+          <CCol md={2} xs="auto">
             <CFormLabel htmlFor="name">Kì Học</CFormLabel>
             <CFormSelect
               options={[
-                { label: 'Lựa Chọn', value: null },
+                { label: 'Lựa Chọn', value: '' },
                 ...Array.from({ length: 10 }, (_, i) => ({ label: `Kì ${i + 1}`, value: i + 1 })),
               ]}
+              onChange={(e) => {
+                setTerm(e.target.value)
+              }}
             />
           </CCol>
 
-          <CCol md={3} xs="auto">
+          <CCol md={1.5} xs="auto">
             <CFormLabel htmlFor="name">Loại Sách</CFormLabel>
+            <CFormCheck
+              type="radio"
+              label="Tất Cả"
+              name="categoryId"
+              value=""
+              onChange={(e) => {
+                setCategoryId('')
+              }}
+              defaultChecked
+            />
             {categories?.data?.map((category) => (
-              <CFormCheck key={category.id} label={category.categoryName} />
+              <CFormCheck
+                type="radio"
+                name="categoryId"
+                key={category.id}
+                label={category.categoryName}
+                value={category.id}
+                onChange={(e) => {
+                  setCategoryId(e.target.value)
+                }}
+              />
             ))}
           </CCol>
         </CRow>

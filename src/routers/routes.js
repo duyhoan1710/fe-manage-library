@@ -7,6 +7,7 @@ const UsersComponent = React.lazy(() => import('../views/users'))
 const AdminComponent = React.lazy(() => import('../views/admin'))
 const StatisticsComponent = React.lazy(() => import('../views/statistics'))
 const PromiseBorrowersComponent = React.lazy(() => import('../views/promise-borrowers'))
+const NotiComponent = React.lazy(() => import('../views/noty'))
 
 const routes = [
   {
@@ -70,6 +71,14 @@ const routes = [
     exact: true,
     name: 'Thống Kê',
     element: StatisticsComponent,
+    needsAuth: true,
+    roles: ['Admin'],
+  },
+  {
+    path: '/noty',
+    exact: true,
+    name: 'Quản Lý Thông Báo',
+    element: NotiComponent,
     needsAuth: true,
     roles: ['Admin'],
   },

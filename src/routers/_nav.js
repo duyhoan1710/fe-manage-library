@@ -1,6 +1,14 @@
 import React from 'react'
 import CIcon from '@coreui/icons-react'
-import { cilCalculator, cilChartPie, cilNotes, cilPuzzle, cilStar, cilUser } from '@coreui/icons'
+import {
+  cilBell,
+  cilCalculator,
+  cilChartPie,
+  cilNotes,
+  cilPuzzle,
+  cilStar,
+  cilUser,
+} from '@coreui/icons'
 import { CNavItem } from '@coreui/react'
 
 const _nav = [
@@ -16,10 +24,6 @@ const _nav = [
     name: 'Sách',
     to: '/books',
     icon: <CIcon icon={cilStar} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'HOT',
-    },
     roles: ['Admin', 'Librarier'],
   },
   {
@@ -55,6 +59,13 @@ const _nav = [
     name: 'Người Dùng Hệ Thống',
     to: '/users',
     icon: <CIcon icon={cilUser} customClassName="nav-icon" />,
+    roles: ['Admin'],
+  },
+  {
+    component: CNavItem,
+    name: 'Quản Lý Thông Báo',
+    to: '/noty',
+    icon: <CIcon icon={cilBell} customClassName="nav-icon" />,
     roles: ['Admin'],
   },
 ]
