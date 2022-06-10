@@ -43,6 +43,14 @@ const routes = [
     roles: ['Admin', 'Librarier'],
   },
   {
+    path: '/returns',
+    exact: true,
+    name: 'Trả Sách',
+    element: BorrowersComponent,
+    needsAuth: true,
+    roles: ['Admin', 'Librarier'],
+  },
+  {
     path: '/promise-borrowers',
     exact: true,
     name: 'Mượn - Trả (Dự Kiến)',

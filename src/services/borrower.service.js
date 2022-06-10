@@ -93,3 +93,9 @@ export const analysBook = async ({ year }) => {
 
   return res.data
 }
+
+export const analysBookByTerm = async () => {
+  const res = await api.get('/books/analyst-books-by-term')
+
+  return res.data
+}

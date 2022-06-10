@@ -1,12 +1,14 @@
 import { useQuery } from 'react-query'
 import {
   ANALYTICS,
+  ANALYTICS_BOOK_BY_TERM,
   ANALYTICS_BOOK_IN_MONTH,
   BORROWER,
   PROMISE_BORROWER,
 } from '../constants/queriesKey'
 import {
   analysBook,
+  analysBookByTerm,
   analyticsBook,
   getBorrower,
   getPromiseBorrower,
@@ -97,6 +99,16 @@ export const useAnalyticsBook = () => {
 export const useMostBookInMonth = ({ year }) => {
   const { data, isLoading, error } = useQuery([ANALYTICS_BOOK_IN_MONTH, year], async () => {
     const res = await analysBook({ year })
+
+    return res
+  })
+
+  return { data, isLoading, error }
+}
+
+export const useMostBookByTerm = () => {
+  const { data, isLoading, error } = useQuery([ANALYTICS_BOOK_BY_TERM], async () => {
+    const res = await analysBookByTerm()
 
     return res
   })

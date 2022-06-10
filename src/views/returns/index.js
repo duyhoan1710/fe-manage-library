@@ -66,8 +66,8 @@ const Borrowers = () => {
     bookName: searchBookKey !== undefined ? searchBookKey : search,
     term: term !== 'Lựa Chọn' ? term : '',
     categoryId,
-    isReturned: status === '1' || '',
-    isExpired: status === '2' || '',
+    isReturned: status === '1' || status === '2' ? true : '',
+    isExpired: status === '1' ? false : status === '2' ? false : '',
     pageNumber: page1,
     pageSize: 100,
   })
@@ -213,6 +213,38 @@ const Borrowers = () => {
               />
             ))}
           </CCol>
+
+          <CCol md={1.5} xs="auto">
+            <CFormLabel htmlFor="name">Trạng Thái</CFormLabel>
+            <CFormCheck
+              type="radio"
+              label="Tất Cả"
+              name="hiringStatus"
+              value=""
+              defaultChecked
+              onChange={() => {
+                setStatus('')
+              }}
+            />
+            <CFormCheck
+              type="radio"
+              label="Đúng Hạn"
+              name="hiringStatus"
+              value="1"
+              onChange={(e) => {
+                setStatus(e.target.value)
+              }}
+            />
+            <CFormCheck
+              type="radio"
+              label="Quá Hạn"
+              name="hiringStatus"
+              value="2"
+              onChange={(e) => {
+                setStatus(e.target.value)
+              }}
+            />
+          </CCol>
         </CRow>
 
         <div className="d-flex align-items-center">
@@ -241,13 +273,14 @@ const Borrowers = () => {
             <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
             <CTableHeaderCell>Ngày Mượn</CTableHeaderCell>
             <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Trả (Thực Tế)</CTableHeaderCell>
             <CTableHeaderCell className="w-150" />
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {borrower1?.data?.map((record, index) => (
+          {borrower2?.data?.map((record, index) => (
             <>
-              {!record.returnedDate && (
+              {!!record.hiredFrom && !!record.returnedDate && (
                 <CTableRow key={record.id}>
                   <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                   <CTableDataCell>
@@ -261,6 +294,18 @@ const Borrowers = () => {
                   <CTableDataCell>{record.studentIdentify}</CTableDataCell>
                   <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>
                   <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
+                  <CTableDataCell>
+                    <span
+                      className={`${
+                        (!record.returnedDate && diff(new Date(), record.expiredDate) > 0) ||
+                        (record.returnedDate && diff(record.returnedDate, record.expiredDate) > 0)
+                          ? 'text-danger'
+                          : 'text-success'
+                      }`}
+                    >
+                      {formatDate(record.returnedDate) || '---'}
+                    </span>
+                  </CTableDataCell>
                   <CTableDataCell>
                     <CButton
                       onClick={() => {
@@ -277,23 +322,23 @@ const Borrowers = () => {
         </CTableBody>
       </CTable>
 
-      {isLoading1 && <Skeleton count={5} />}
+      {isLoading2 && <Skeleton count={5} />}
 
       <CPagination align="end">
-        <CPaginationItem aria-label="Trang Trước" disabled={page1 === 1}>
+        <CPaginationItem aria-label="Trang Trước" disabled={page2 === 1}>
           <span aria-hidden="true">&laquo;</span>
         </CPaginationItem>
         {Array.from(
-          { length: Math.round(borrower1?.totalRecords / borrower1?.pageSize) + 1 },
+          { length: Math.round(borrower2?.totalRecords / borrower2?.pageSize) + 1 },
           (_, i) => (
-            <CPaginationItem active={i + 1 === page1} onClick={() => setPage1(i + 1)}>
+            <CPaginationItem active={i + 1 === page2} onClick={() => setPage2(i + 1)}>
               {i + 1}
             </CPaginationItem>
           ),
         )}
         <CPaginationItem
           aria-label="Next"
-          disabled={page1 >= Math.round(books?.totalRecords / books?.pageSize) + 1}
+          disabled={page2 >= Math.round(books?.totalRecords / books?.pageSize) + 1}
         >
           <span aria-hidden="true">&raquo;</span>
         </CPaginationItem>
