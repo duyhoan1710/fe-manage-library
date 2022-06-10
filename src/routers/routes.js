@@ -8,6 +8,7 @@ const AdminComponent = React.lazy(() => import('../views/admin'))
 const StatisticsComponent = React.lazy(() => import('../views/statistics'))
 const PromiseBorrowersComponent = React.lazy(() => import('../views/promise-borrowers'))
 const NotiComponent = React.lazy(() => import('../views/noty'))
+const Returns = React.lazy(() => import('../views/returns'))
 
 const routes = [
   {
@@ -46,7 +47,7 @@ const routes = [
     path: '/returns',
     exact: true,
     name: 'Trả Sách',
-    element: BorrowersComponent,
+    element: Returns,
     needsAuth: true,
     roles: ['Admin', 'Librarier'],
   },

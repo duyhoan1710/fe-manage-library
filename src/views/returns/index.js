@@ -42,7 +42,7 @@ import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import { BORROWER } from 'src/constants/queriesKey'
 
-const Borrowers = () => {
+const Returns = () => {
   const queryCache = useQueryClient()
 
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -67,7 +67,7 @@ const Borrowers = () => {
     term: term !== 'Lựa Chọn' ? term : '',
     categoryId,
     isReturned: status === '1' || status === '2' ? true : '',
-    isExpired: status === '1' ? false : status === '2' ? false : '',
+    isExpired: status === '1' ? false : status === '2' ? true : '',
     pageNumber: page1,
     pageSize: 100,
   })
@@ -596,4 +596,4 @@ const Borrowers = () => {
   )
 }
 
-export default Borrowers
+export default Returns
