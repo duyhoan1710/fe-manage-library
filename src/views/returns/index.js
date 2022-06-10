@@ -61,24 +61,14 @@ const Returns = () => {
   const { data: categories } = useCategory()
   const { data: books } = useBooks({})
   const { data: users } = useUsers()
-  const { data: borrower1, isLoading1 } = useBorrowers({
-    readerName: searchUserKey,
-    bookName: searchBookKey !== undefined ? searchBookKey : search,
-    term: term !== 'Lựa Chọn' ? term : '',
-    categoryId,
-    isReturned: status === '1' || status === '2' ? true : '',
-    isExpired: status === '1' ? false : status === '2' ? true : '',
-    pageNumber: page1,
-    pageSize: 100,
-  })
 
   const { data: borrower2, isLoading2 } = useBorrowers({
     readerName: searchUserKey,
     bookName: searchBookKey !== undefined ? searchBookKey : search,
     term: term !== 'Lựa Chọn' ? term : '',
     categoryId,
-    isReturned: status === '1' || '',
-    isExpired: status === '2' || '',
+    isReturned: status === '1' || status === '2' ? true : '',
+    isExpired: status === '1' ? false : status === '2' ? true : '',
     pageNumber: page2,
     pageSize: 100,
   })
@@ -126,7 +116,7 @@ const Returns = () => {
 
   const recordUpdate = useMemo(() => {
     if (updateBorrowerId) {
-      const data = borrower1?.data?.find((el) => el.id === updateBorrowerId)
+      const data = borrower2?.data?.find((el) => el.id === updateBorrowerId)
       return data
     }
     return {}
@@ -134,7 +124,7 @@ const Returns = () => {
 
   useEffect(() => {
     if (updateBorrowerId) {
-      const data = borrower1?.data?.find((el) => el.id === updateBorrowerId)
+      const data = borrower2?.data?.find((el) => el.id === updateBorrowerId)
       formik.setFieldValue('hiredDate', data.hiredFrom, false)
       formik.setFieldValue('expiredDate', data.expiredDate, false)
       formik.setFieldValue('returnDate', data.returnedDate, false)

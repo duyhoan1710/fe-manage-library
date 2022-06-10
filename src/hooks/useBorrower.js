@@ -5,6 +5,7 @@ import {
   ANALYTICS_BOOK_IN_MONTH,
   BORROWER,
   PROMISE_BORROWER,
+  RETURN,
 } from '../constants/queriesKey'
 import {
   analysBook,
@@ -26,6 +27,37 @@ export const useBorrowers = ({
 }) => {
   const { data, isLoading, error } = useQuery(
     [BORROWER, readerName, bookName, term, categoryId, isReturned, isExpired, pageSize, pageNumber],
+    async () => {
+      const res = await getBorrower({
+        readerName,
+        bookName,
+        term,
+        categoryId,
+        isReturned,
+        isExpired,
+        pageSize,
+        pageNumber,
+      })
+
+      return res
+    },
+  )
+
+  return { data, isLoading, error }
+}
+
+export const useReturns = ({
+  readerName,
+  bookName,
+  term,
+  categoryId,
+  isReturned,
+  isExpired,
+  pageSize,
+  pageNumber,
+}) => {
+  const { data, isLoading, error } = useQuery(
+    [RETURN, readerName, bookName, term, categoryId, isReturned, isExpired, pageSize, pageNumber],
     async () => {
       const res = await getBorrower({
         readerName,

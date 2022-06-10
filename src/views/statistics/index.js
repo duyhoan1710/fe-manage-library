@@ -107,10 +107,7 @@ const Statistics = () => {
           </CTableHead>
           <CTableBody>
             {bookInTerm?.map((book, index) => (
-              <CTableRow
-                key={book.id}
-                onClick={() => navigate(`/borrowers?bookName=${book.title}`)}
-              >
+              <CTableRow key={book.id}>
                 <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                 <CTableDataCell>Kì {book.term}</CTableDataCell>
                 <CTableDataCell>{book.totalAvailable}</CTableDataCell>
