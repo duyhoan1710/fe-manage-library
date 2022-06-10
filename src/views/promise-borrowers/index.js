@@ -198,6 +198,18 @@ const PromiseBorrowers = () => {
             ))}
           </CCol>
         </CRow>
+
+        <div className="d-flex align-items-center">
+          <CButton
+            color="success"
+            className="text-white"
+            onClick={() => {
+              setIsOpenModal(true)
+            }}
+          >
+            Thêm Mới
+          </CButton>
+        </div>
       </div>
 
       <CTable bordered hover align="middle">

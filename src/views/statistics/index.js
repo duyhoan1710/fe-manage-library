@@ -24,8 +24,6 @@ const Statistics = () => {
   const { data: bookInMonth } = useMostBookInMonth({ year: new Date(year).getFullYear() })
   const { data: bookInTerm } = useMostBookByTerm()
 
-  console.log(bookInTerm)
-
   const navigate = useNavigate()
 
   return (
@@ -108,7 +106,7 @@ const Statistics = () => {
             </CTableRow>
           </CTableHead>
           <CTableBody>
-            {bookInTerm.map((book, index) => (
+            {bookInTerm?.map((book, index) => (
               <CTableRow
                 key={book.id}
                 onClick={() => navigate(`/borrowers?bookName=${book.title}`)}
