@@ -2,12 +2,15 @@ import { useQuery } from 'react-query'
 import { BOOK, EXPIRE_BOOK, HIRING_BOOK, RETURN_BOOK } from '../constants/queriesKey'
 import { getBooks, getExpireBooks, getHiringBooks, getReturnBooks } from '../services/book.service'
 
-export const useBooks = ({ pageNumber = 1, pageSize = 20, searchKey }) => {
-  const { data, isLoading, error } = useQuery([BOOK, pageNumber, searchKey], async () => {
-    const res = await getBooks({ pageNumber, pageSize, searchKey })
+export const useBooks = ({ pageNumber = 1, pageSize = 20, searchKey, term, categoryId }) => {
+  const { data, isLoading, error } = useQuery(
+    [BOOK, pageNumber, searchKey, term, categoryId],
+    async () => {
+      const res = await getBooks({ pageNumber, pageSize, searchKey, term, categoryId })
 
-    return res
-  })
+      return res
+    },
+  )
 
   return { data, isLoading, error }
 }

@@ -53,21 +53,34 @@ const Borrowers = () => {
   const [term, setTerm] = useState()
   const [categoryId, setCategoryId] = useState()
   const [status, setStatus] = useState()
-  const [page, setPage] = useState(1)
+  const [page1, setPage1] = useState(1)
+  const [page2, setPage2] = useState(1)
 
   const search = new URLSearchParams(useLocation().search).get('bookName')
 
   const { data: categories } = useCategory()
   const { data: books } = useBooks({})
   const { data: users } = useUsers()
-  const { data: borrower, isLoading } = useBorrowers({
+  const { data: borrower1, isLoading1 } = useBorrowers({
     readerName: searchUserKey,
     bookName: searchBookKey !== undefined ? searchBookKey : search,
     term: term !== 'Lựa Chọn' ? term : '',
     categoryId,
     isReturned: status === '1' || '',
     isExpired: status === '2' || '',
-    pageNumber: page,
+    pageNumber: page1,
+    pageSize: 100,
+  })
+
+  const { data: borrower2, isLoading2 } = useBorrowers({
+    readerName: searchUserKey,
+    bookName: searchBookKey !== undefined ? searchBookKey : search,
+    term: term !== 'Lựa Chọn' ? term : '',
+    categoryId,
+    isReturned: status === '1' || '',
+    isExpired: status === '2' || '',
+    pageNumber: page2,
+    pageSize: 100,
   })
 
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
@@ -113,7 +126,7 @@ const Borrowers = () => {
 
   const recordUpdate = useMemo(() => {
     if (updateBorrowerId) {
-      const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
+      const data = borrower1?.data?.find((el) => el.id === updateBorrowerId)
       return data
     }
     return {}
@@ -121,7 +134,7 @@ const Borrowers = () => {
 
   useEffect(() => {
     if (updateBorrowerId) {
-      const data = borrower?.data?.find((el) => el.id === updateBorrowerId)
+      const data = borrower1?.data?.find((el) => el.id === updateBorrowerId)
       formik.setFieldValue('hiredDate', data.hiredFrom, false)
       formik.setFieldValue('expiredDate', data.expiredDate, false)
       formik.setFieldValue('returnDate', data.returnedDate, false)
@@ -247,6 +260,81 @@ const Borrowers = () => {
         </div>
       </div>
 
+      <h3 className="py-2">Sách Đang Mượn</h3>
+
+      <CTable bordered hover align="middle">
+        <CTableHead>
+          <CTableRow>
+            <CTableHeaderCell>Thứ Tự</CTableHeaderCell>
+            <CTableHeaderCell>Ảnh</CTableHeaderCell>
+            <CTableHeaderCell>Tên Sách</CTableHeaderCell>
+            <CTableHeaderCell>Loại Sách</CTableHeaderCell>
+            <CTableHeaderCell>Trạng Thái Sách</CTableHeaderCell>
+            <CTableHeaderCell>Kì Học</CTableHeaderCell>
+            <CTableHeaderCell>Người Đọc</CTableHeaderCell>
+            <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Mượn</CTableHeaderCell>
+            <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
+            <CTableHeaderCell className="w-150" />
+          </CTableRow>
+        </CTableHead>
+        <CTableBody>
+          {borrower1?.data?.map((record, index) => (
+            <>
+              {!record.returnedDate && (
+                <CTableRow key={record.id}>
+                  <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                  <CTableDataCell>
+                    <CImage rounded width={70} height={50} src={record.thumbnail} />
+                  </CTableDataCell>
+                  <CTableDataCell>{record.title}</CTableDataCell>
+                  <CTableDataCell>{record.categoryCode}</CTableDataCell>
+                  <CTableDataCell>{record.isNewBook ? 'Sách Mới' : 'Sách Cũ'}</CTableDataCell>
+                  <CTableDataCell>Kì {record.term}</CTableDataCell>
+                  <CTableDataCell>{record.studentName}</CTableDataCell>
+                  <CTableDataCell>{record.studentIdentify}</CTableDataCell>
+                  <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>
+                  <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
+                  <CTableDataCell>
+                    <CButton
+                      onClick={() => {
+                        setUpdateBorrowerId(record.id)
+                      }}
+                    >
+                      Cập Nhật
+                    </CButton>
+                  </CTableDataCell>
+                </CTableRow>
+              )}
+            </>
+          ))}
+        </CTableBody>
+      </CTable>
+
+      {isLoading1 && <Skeleton count={5} />}
+
+      <CPagination align="end">
+        <CPaginationItem aria-label="Trang Trước" disabled={page1 === 1}>
+          <span aria-hidden="true">&laquo;</span>
+        </CPaginationItem>
+        {Array.from(
+          { length: Math.round(borrower1?.totalRecords / borrower1?.pageSize) + 1 },
+          (_, i) => (
+            <CPaginationItem active={i + 1 === page1} onClick={() => setPage1(i + 1)}>
+              {i + 1}
+            </CPaginationItem>
+          ),
+        )}
+        <CPaginationItem
+          aria-label="Next"
+          disabled={page1 >= Math.round(books?.totalRecords / books?.pageSize) + 1}
+        >
+          <span aria-hidden="true">&raquo;</span>
+        </CPaginationItem>
+      </CPagination>
+
+      <h3 className="py-2">Sách Đã Trả</h3>
+
       <CTable bordered hover align="middle">
         <CTableHead>
           <CTableRow>
@@ -265,63 +353,67 @@ const Borrowers = () => {
           </CTableRow>
         </CTableHead>
         <CTableBody>
-          {borrower?.data?.map((record, index) => (
-            <CTableRow key={record.id}>
-              <CTableHeaderCell>{index + 1}</CTableHeaderCell>
-              <CTableDataCell>
-                <CImage rounded width={70} height={50} src={record.thumbnail} />
-              </CTableDataCell>
-              <CTableDataCell>{record.title}</CTableDataCell>
-              <CTableDataCell>{record.categoryCode}</CTableDataCell>
-              <CTableDataCell>{record.isNewBook ? 'Sách Mới' : 'Sách Cũ'}</CTableDataCell>
-              <CTableDataCell>Kì {record.term}</CTableDataCell>
-              <CTableDataCell>{record.studentName}</CTableDataCell>
-              <CTableDataCell>{record.studentIdentify}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>
-              <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
-              <CTableDataCell>
-                <span
-                  className={`${
-                    (!record.returnedDate && diff(new Date(), record.expiredDate) > 0) ||
-                    (record.returnedDate && diff(record.returnedDate, record.expiredDate) > 0)
-                      ? 'text-danger'
-                      : 'text-success'
-                  }`}
-                >
-                  {formatDate(record.returnedDate) || '---'}
-                </span>
-              </CTableDataCell>
-              <CTableDataCell>
-                <CButton
-                  onClick={() => {
-                    setUpdateBorrowerId(record.id)
-                  }}
-                >
-                  Cập Nhật
-                </CButton>
-              </CTableDataCell>
-            </CTableRow>
+          {borrower2?.data?.map((record, index) => (
+            <>
+              {!!record.hiredFrom && !!record.returnedDate && (
+                <CTableRow key={record.id}>
+                  <CTableHeaderCell>{index + 1}</CTableHeaderCell>
+                  <CTableDataCell>
+                    <CImage rounded width={70} height={50} src={record.thumbnail} />
+                  </CTableDataCell>
+                  <CTableDataCell>{record.title}</CTableDataCell>
+                  <CTableDataCell>{record.categoryCode}</CTableDataCell>
+                  <CTableDataCell>{record.isNewBook ? 'Sách Mới' : 'Sách Cũ'}</CTableDataCell>
+                  <CTableDataCell>Kì {record.term}</CTableDataCell>
+                  <CTableDataCell>{record.studentName}</CTableDataCell>
+                  <CTableDataCell>{record.studentIdentify}</CTableDataCell>
+                  <CTableDataCell>{formatDate(record.hiredFrom)}</CTableDataCell>
+                  <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
+                  <CTableDataCell>
+                    <span
+                      className={`${
+                        (!record.returnedDate && diff(new Date(), record.expiredDate) > 0) ||
+                        (record.returnedDate && diff(record.returnedDate, record.expiredDate) > 0)
+                          ? 'text-danger'
+                          : 'text-success'
+                      }`}
+                    >
+                      {formatDate(record.returnedDate) || '---'}
+                    </span>
+                  </CTableDataCell>
+                  <CTableDataCell>
+                    <CButton
+                      onClick={() => {
+                        setUpdateBorrowerId(record.id)
+                      }}
+                    >
+                      Cập Nhật
+                    </CButton>
+                  </CTableDataCell>
+                </CTableRow>
+              )}
+            </>
           ))}
         </CTableBody>
       </CTable>
 
-      {isLoading && <Skeleton count={5} />}
+      {isLoading2 && <Skeleton count={5} />}
 
       <CPagination align="end">
-        <CPaginationItem aria-label="Trang Trước" disabled={page === 1}>
+        <CPaginationItem aria-label="Trang Trước" disabled={page2 === 1}>
           <span aria-hidden="true">&laquo;</span>
         </CPaginationItem>
         {Array.from(
-          { length: Math.round(borrower?.totalRecords / borrower?.pageSize) + 1 },
+          { length: Math.round(borrower2?.totalRecords / borrower2?.pageSize) + 1 },
           (_, i) => (
-            <CPaginationItem active={i + 1 === page} onClick={() => setPage(i + 1)}>
+            <CPaginationItem active={i + 1 === page2} onClick={() => setPage2(i + 1)}>
               {i + 1}
             </CPaginationItem>
           ),
         )}
         <CPaginationItem
           aria-label="Next"
-          disabled={page >= Math.round(books?.totalRecords / books?.pageSize) + 1}
+          disabled={page2 >= Math.round(books?.totalRecords / books?.pageSize) + 1}
         >
           <span aria-hidden="true">&raquo;</span>
         </CPaginationItem>
