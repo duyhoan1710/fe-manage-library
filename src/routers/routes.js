@@ -7,6 +7,7 @@ const UsersComponent = React.lazy(() => import('../views/users'))
 const AdminComponent = React.lazy(() => import('../views/admin'))
 const StatisticsComponent = React.lazy(() => import('../views/statistics'))
 const PromiseBorrowersComponent = React.lazy(() => import('../views/promise-borrowers'))
+const PromiseReturnComponent = React.lazy(() => import('../views/promise-return'))
 const NotiComponent = React.lazy(() => import('../views/noty'))
 const Returns = React.lazy(() => import('../views/returns'))
 
@@ -56,6 +57,14 @@ const routes = [
     exact: true,
     name: 'Mượn - Trả (Dự Kiến)',
     element: PromiseBorrowersComponent,
+    needsAuth: true,
+    roles: ['Admin', 'Librarier'],
+  },
+  {
+    path: '/promise-return',
+    exact: true,
+    name: 'Mượn - Trả (Dự Kiến)',
+    element: PromiseReturnComponent,
     needsAuth: true,
     roles: ['Admin', 'Librarier'],
   },

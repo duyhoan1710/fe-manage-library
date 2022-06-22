@@ -28,8 +28,15 @@ const _nav = [
   },
   {
     component: CNavItem,
-    name: 'Mượn - Trả (Dự Kiến)',
+    name: 'Mượn (Dự Kiến)',
     to: '/promise-borrowers',
+    icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
+    roles: ['Admin', 'Librarier'],
+  },
+  {
+    component: CNavItem,
+    name: 'Trả (Dự Kiến)',
+    to: '/promise-return',
     icon: <CIcon icon={cilCalculator} customClassName="nav-icon" />,
     roles: ['Admin', 'Librarier'],
   },

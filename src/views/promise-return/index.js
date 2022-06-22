@@ -42,7 +42,7 @@ import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import * as dayjs from 'dayjs'
 
-const PromiseBorrowers = () => {
+const PromiseReturn = () => {
   const queryCache = useQueryClient()
 
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -216,7 +216,7 @@ const PromiseBorrowers = () => {
         <CTableBody>
           {borrower?.data?.map((record, index) => (
             <>
-              {!record.expiredDate && (
+              {record.expiredDate && (
                 <CTableRow key={record.id}>
                   <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                   <CTableDataCell>
@@ -426,4 +426,4 @@ const PromiseBorrowers = () => {
   )
 }
 
-export default PromiseBorrowers
+export default PromiseReturn
