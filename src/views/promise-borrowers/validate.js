@@ -7,8 +7,8 @@ export const createBorrowerSchema = Yup.object({
 })
 
 export const updateBorrowerSchema = Yup.object({
-  hiredDate: Yup.string().required(),
-  expiredDate: Yup.string().required(),
+  hiredDate: Yup.string().nullable(),
+  expiredDate: Yup.string().nullable(),
   returnDate: Yup.string().nullable(),
   note: Yup.string(),
 })

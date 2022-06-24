@@ -41,6 +41,7 @@ import debounce from 'lodash.debounce'
 import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import * as dayjs from 'dayjs'
+import { PROMISE_BORROWER } from 'src/constants/queriesKey'
 
 const PromiseReturn = () => {
   const queryCache = useQueryClient()
@@ -68,6 +69,7 @@ const PromiseReturn = () => {
     isReturned: status === '1' || '',
     isExpired: status === '2' || '',
     pageNumber: page,
+    pageSize: 100,
   })
 
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
@@ -81,7 +83,7 @@ const PromiseReturn = () => {
     {
       onSuccess: async () => {
         onClose()
-        await queryCache.invalidateQueries()
+        await queryCache.invalidateQueries(PROMISE_BORROWER)
         toast.success('Thay Đổi Thành Công')
       },
       onError: () => {
@@ -217,7 +219,7 @@ const PromiseReturn = () => {
           {borrower?.data?.map((record, index) => (
             <>
               {record.expiredDate && !record.hiredFrom && (
-                <CTableRow key={record.id}>
+                <CTableRow>
                   <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                   <CTableDataCell>
                     <CImage rounded width={70} height={50} src={record.thumbnail} />
@@ -268,7 +270,7 @@ const PromiseReturn = () => {
       </CPagination>
 
       {updateBorrowerId && (
-        <CModal visible={updateBorrowerId} onClose={onClose} alignment="center" size="lg">
+        <CModal visible={!!updateBorrowerId} onClose={onClose} alignment="center" size="lg">
           <CModalHeader>
             <CModalTitle>Cập nhật mượn sách</CModalTitle>
           </CModalHeader>

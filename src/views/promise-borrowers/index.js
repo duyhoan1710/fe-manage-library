@@ -41,6 +41,7 @@ import debounce from 'lodash.debounce'
 import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import * as dayjs from 'dayjs'
+import { PROMISE_BORROWER } from 'src/constants/queriesKey'
 
 const PromiseBorrowers = () => {
   const queryCache = useQueryClient()
@@ -68,10 +69,13 @@ const PromiseBorrowers = () => {
     isReturned: status === '1' || '',
     isExpired: status === '2' || '',
     pageNumber: page,
+    pageSize: 100,
   })
 
   const { mutate: onSubmit, isLoading: isLoadingSubmit } = useMutation(
     async () => {
+      console.log('aaa')
+
       const res = updateBorrowerId
         ? await updateBorrower({ borrowerId: updateBorrowerId, ...formik.values })
         : await createBorrower({ ...formik.values })
@@ -81,7 +85,7 @@ const PromiseBorrowers = () => {
     {
       onSuccess: async () => {
         onClose()
-        await queryCache.invalidateQueries()
+        await queryCache.invalidateQueries(PROMISE_BORROWER)
         toast.success('Thay Đổi Thành Công')
       },
       onError: () => {
@@ -266,7 +270,7 @@ const PromiseBorrowers = () => {
       </CPagination>
 
       {updateBorrowerId && (
-        <CModal visible={updateBorrowerId} onClose={onClose} alignment="center" size="lg">
+        <CModal visible={!!updateBorrowerId} onClose={onClose} alignment="center" size="lg">
           <CModalHeader>
             <CModalTitle>Cập nhật mượn sách</CModalTitle>
           </CModalHeader>
