@@ -55,7 +55,7 @@ const routes = [
   {
     path: '/promise-borrowers',
     exact: true,
-    name: 'Mượn - Trả (Dự Kiến)',
+    name: 'Mượn (Dự Kiến)',
     element: PromiseBorrowersComponent,
     needsAuth: true,
     roles: ['Admin', 'Librarier'],
@@ -63,7 +63,7 @@ const routes = [
   {
     path: '/promise-return',
     exact: true,
-    name: 'Mượn - Trả (Dự Kiến)',
+    name: 'Trả (Dự Kiến)',
     element: PromiseReturnComponent,
     needsAuth: true,
     roles: ['Admin', 'Librarier'],

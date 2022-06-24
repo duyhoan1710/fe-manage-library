@@ -133,7 +133,7 @@ const Users = () => {
                     <div className="cursor-pointer">{record.totalExpired}</div>
                   </CPopover>
                 ) : (
-                  record.totalHiring
+                  record.totalExpired
                 )}
               </CTableDataCell>
             </CTableRow>

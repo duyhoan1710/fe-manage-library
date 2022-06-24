@@ -209,7 +209,6 @@ const PromiseBorrowers = () => {
             <CTableHeaderCell>Người Đọc</CTableHeaderCell>
             <CTableHeaderCell>Mã Sinh Viên</CTableHeaderCell>
             <CTableHeaderCell>Ngày Mượn (Dự Kiến)</CTableHeaderCell>
-            <CTableHeaderCell>Ngày Trả (Dự Kiến)</CTableHeaderCell>
             <CTableHeaderCell className="w-150" />
           </CTableRow>
         </CTableHead>
@@ -228,7 +227,6 @@ const PromiseBorrowers = () => {
                   <CTableDataCell>{record.studentName}</CTableDataCell>
                   <CTableDataCell>{record.studentIdentify}</CTableDataCell>
                   <CTableDataCell>{formatDate(record.esimatingHiredDate)}</CTableDataCell>
-                  <CTableDataCell>{formatDate(record.expiredDate)}</CTableDataCell>
                   <CTableDataCell>
                     <CButton
                       onClick={() => {

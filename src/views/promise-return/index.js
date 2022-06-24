@@ -216,7 +216,7 @@ const PromiseReturn = () => {
         <CTableBody>
           {borrower?.data?.map((record, index) => (
             <>
-              {record.expiredDate && (
+              {record.expiredDate && !record.hiredFrom && (
                 <CTableRow key={record.id}>
                   <CTableHeaderCell>{index + 1}</CTableHeaderCell>
                   <CTableDataCell>
